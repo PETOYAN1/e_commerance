@@ -11,7 +11,7 @@ export const Navigation = () => {
                 <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
                     <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo"/>
                     <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                    E-commerce
+                    E-commerce Martin Nelson
                     </span>
                 </Link>
                 <div className="flex items-center space-x-6 rtl:space-x-reverse">
@@ -19,10 +19,10 @@ export const Navigation = () => {
                         (555) 412-1234
                     </Link>
                     <Link to="/login" className="text-sm  text-blue-600 dark:text-blue-500 hover:underline">
-                        Login
+                        Login Martin Nelson
                     </Link>
                     <Link to="/register" className="text-sm  text-blue-600 dark:text-blue-500 hover:underline">
-                        Register
+                        Register Martin Nelson
                     </Link>
                     <Header/>
                 </div>
