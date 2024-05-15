@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Images;
@@ -71,7 +72,7 @@ class ProductController extends Controller
                     'message' => "You can upload a maximum of 8 images"
                 ], 400);
             }
-
+            
 
             foreach ($imageFile as $image) {
                 $product->save();
@@ -82,11 +83,10 @@ class ProductController extends Controller
                 $imageData[] = [
                     'product_id' => $product->id,
                     'image' => $path . $imageName,
-                    'created_at' => now()
                 ];
             }
 
-            Images::insert($imageData);
+            Images::create($imageData);
 
             return response()->json([
                 'code' => 201,
@@ -114,8 +114,13 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         try {
+            
             $product = Product::with('category', 'discount', 'Images')->find($product->id);
 
+            if (!$product) {
+                return response()->noContent();
+            }
+            
             if (!$product) {
                 return response()->json([
                     'code' => 404,
@@ -135,9 +140,65 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+    public function update(UpdateProductRequest $request, Product $product)
+    {   
+        try {
+            $validData = $request->validated();
+            $product->name = $validData['name'];
+            dd($product->name);
+            $product->description = $validData['description'];
+            $product->price = $validData['price'];
+            $product->slug = Str::slug($product->name, '-');
+            $product->category_id = $validData['category_id'];
+
+            if ($request->has('images')) {
+                foreach ($request->images as $imageId => $newImageData) {
+                    $image = Images::find($imageId);
+                    if ($image) {
+                        $image->update(['image' => $newImageData]);
+                    }
+                }
+            }
+            $product->update();
+
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Product updated successfully',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'code' => 500,
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function destroy (Product $product) {
+        try {
+            $productWithDetails = Product::with('category', 'discount', 'Images')->findOrFail($product->id);
+            
+            foreach ($productWithDetails->images as $image) {
+                Storage::disk('public')->delete($image->image);
+            }
+
+            $productWithDetails->images()->delete();
+
+            $productWithDetails->delete();
+
+            return response()->noContent();
+        }
+        catch (Exception $e) {
+            return response()->json([
+                'code' => 500,
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
 }
 
-
-function update () {
-
-}
