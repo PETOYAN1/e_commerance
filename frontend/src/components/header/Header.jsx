@@ -12,14 +12,15 @@ const Header = () => {
          <div>
             {theme.palette.mode === "light" ? (
                 <IconButton
-                onClick={() => {
-                    localStorage.setItem(
-                    "mode",
-                    theme.palette.mode === "dark" ? "light" : "dark"
-                    );
-                    colorMode.toggleColorMode();
-                }}
-                color="inherit"
+
+                    onClick={() => {
+                        localStorage.setItem(
+                        "mode",
+                        theme.palette.mode === "dark" ? "light" : "dark"
+                        );
+                        colorMode.toggleColorMode();
+                    }}
+                    color="secondary"
                 >
                 <LightModeOutlined />
                 </IconButton>

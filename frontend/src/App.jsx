@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import { Outlet } from "react-router-dom";
+import Main from "./components/main/main";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -15,6 +16,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <div className="App min-h-screen">
           <Navigation/>
+          <Main/>
           <CssBaseline />
           <div className="mx-auto">
             <Routes>

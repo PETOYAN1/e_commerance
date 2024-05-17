@@ -46,13 +46,14 @@ const Search = () => {
   }));
   return (
     <>
-      <Search>
+      <Search sx={{ borderRadius: "22px"}}>
         <SearchIconWrapper>
           <SearchIcon />
         </SearchIconWrapper>
         <StyledInputBase
           placeholder="Search…"
-          inputProps={{ "aria-label": "search" }}
+          inputProps={{ "aria-label": "search", "className" : "w-full" }}
+
         />
       </Search>
     </>
