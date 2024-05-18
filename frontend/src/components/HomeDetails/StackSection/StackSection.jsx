@@ -18,7 +18,7 @@ const StackSection = () => {
     const theme = useTheme();
 
     return (
-    <Box sx={{ mt: 3, width: 250, display:'flex', flexGrow: 1, alignItems: 'center', justifyContent: 'center', gap: 3}}>
+    <Box sx={{ my: 3, width: 250, display:'flex', flexGrow: 1, alignItems: 'center', justifyContent: 'center', gap: 3}}>
       <Stack
         direction="row"
         divider={<Divider orientation="vertical" flexItem />}

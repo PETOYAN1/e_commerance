@@ -24,11 +24,11 @@ const SliderSwiper = () => {
         modules={[Pagination, Navigation]}
         className="mySwiper"
       >
-        <SwiperSlide><Link className='w-full'><img src="src/assets/images/gaming_pc.jpg" alt="" /></Link></SwiperSlide>
-        <SwiperSlide><Link className='w-full'><img src="src/assets/images/laptop.webp" alt="" /></Link></SwiperSlide>
-        <SwiperSlide><Link className='w-full'><img src="src/assets/images/gaming_pc.jpg" alt="" /></Link></SwiperSlide>
-        <SwiperSlide><Link className='w-full'><img src="src/assets/images/laptop.webp" alt="" /></Link></SwiperSlide>
-        <SwiperSlide><Link className='w-full'><img src="src/assets/images/gaming_pc.jpg" alt="" /></Link></SwiperSlide>
+        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/gaming_pc.jpg" alt="" /></Link></SwiperSlide>
+        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/laptop.webp" alt="" /></Link></SwiperSlide>
+        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/gaming_pc.jpg" alt="" /></Link></SwiperSlide>
+        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/laptop.webp" alt="" /></Link></SwiperSlide>
+        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/gaming_pc.jpg" alt="" /></Link></SwiperSlide>
       </Swiper>
     </>
   );

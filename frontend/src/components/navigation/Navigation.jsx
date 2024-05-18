@@ -8,8 +8,6 @@ import IconButton from '@mui/material/IconButton';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 import { grey } from "@mui/material/colors";
-import Header2 from "../header/Header2";
-import Main from "../../components/main/main";
 
 
 export const Navigation = () => {
@@ -74,8 +72,6 @@ export const Navigation = () => {
             </div>
           </div>
         </nav>
-        <Header2/>
-        <Main/>
     </>
   )
 }
