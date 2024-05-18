@@ -86,7 +86,7 @@ const Header2 = () => {
         mt: 5,
       }}
     >
-      <Box>
+      <Box sx={{ marginLeft: 3 }}>
         <Button
           id="basic-button"
           aria-controls={open ? "basic-menu" : undefined}

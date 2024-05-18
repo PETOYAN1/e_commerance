@@ -6,9 +6,11 @@ const Search = () => {
   const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
+    border: '1px solid #777',
     backgroundColor: alpha(theme.palette.common.white, 0.15),
     '&:hover': {
       backgroundColor: alpha(theme.palette.common.white, 0.25),
+      border: '1px solid #555'
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
@@ -40,17 +42,18 @@ const Search = () => {
       transition: theme.transitions.create('width'),
       width: '100%',
       [theme.breakpoints.up('md')]: {
-        width: '20ch',
+        width: '100%',
       },
     },
   }));
   return (
     <>
-      <Search sx={{ borderRadius: "22px"}}>
+      <Search sx={{ borderRadius: "22px", width: "47%"}}>
         <SearchIconWrapper>
           <SearchIcon />
         </SearchIconWrapper>
         <StyledInputBase
+          sx={{ width: "100%" }}
           placeholder="Search…"
           inputProps={{ "aria-label": "search", "className" : "w-full" }}
 
