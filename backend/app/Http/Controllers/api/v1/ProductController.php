@@ -153,7 +153,6 @@ class ProductController extends Controller
         try {
             $productWithDetails = Product::with('category', 'discount', 'Images')->findOrFail($product->id);
             $validData = $request->validated();
-            
             $productWithDetails->name = $validData['name'];
             $productWithDetails->description = $validData['description'];
             $productWithDetails->price = $validData['price'];
