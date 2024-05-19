@@ -6,9 +6,11 @@ const Search = () => {
   const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
+    border: '1px solid #777',
     backgroundColor: alpha(theme.palette.common.white, 0.15),
     '&:hover': {
       backgroundColor: alpha(theme.palette.common.white, 0.25),
+      border: '1px solid #555'
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
@@ -35,24 +37,24 @@ const Search = () => {
     color: 'white',
     '& .MuiInputBase-input': {
       padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
       paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       transition: theme.transitions.create('width'),
       width: '100%',
       [theme.breakpoints.up('md')]: {
-        width: '20ch',
+        width: '100%',
       },
     },
   }));
   return (
     <>
-      <Search>
+      <Search sx={{ borderRadius: "22px", width: "47%"}}>
         <SearchIconWrapper>
           <SearchIcon />
         </SearchIconWrapper>
         <StyledInputBase
+          sx={{ width: "100%" }}
           placeholder="Search…"
-          inputProps={{ "aria-label": "search" }}
+          inputProps={{ "aria-label": "search", "className" : "w-full" }}
         />
       </Search>
     </>

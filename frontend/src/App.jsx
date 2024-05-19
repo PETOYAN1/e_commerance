@@ -11,22 +11,23 @@ function App() {
   const [theme, colorMode] = useMode();
   return (
     <>
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <div className="App min-h-screen">
-          <Navigation/>
-          <CssBaseline />
-          <div className="mx-auto">
-            <Routes>
-              <Route path="/" element={<Home/>}/>
-              <Route path="/login" element={<Login/>}/>
-              <Route path="/register" element={<Register/>}/>
-            </Routes>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <div className="App min-h-screen">
+            <Navigation />
+
+            <CssBaseline />
+            <div className="mx-auto">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </Routes>
+            </div>
+            <Outlet />
           </div>
-          <Outlet />
-        </div>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
     </>
   );
 }
