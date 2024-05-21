@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\CategoryWithProductsResource;
 use App\Models\Category;
 use Exception;
 use Illuminate\Http\Request;
@@ -71,14 +72,14 @@ class ProductCategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $category = Category::find($id);
+            $category = Category::withCount("Products")->find($id);
     
             if (!$category) {
                 return response()->json(['message' => 'Category not found'], 404);
             }
         
             return response()->json([
-                'data' => new CategoryResource($category)
+                'data' => new CategoryWithProductsResource($category)
             ]);
         } catch (Exception $e) {
             return response()->json([

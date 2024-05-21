@@ -1,17 +1,10 @@
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import WindowIcon from "@mui/icons-material/Window";
-import {
-  Box,
-  Container,
-  IconButton,
-  SwipeableDrawer,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, Container, IconButton, SwipeableDrawer, Typography, useMediaQuery, } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import MenuIcon from "@mui/icons-material/Menu";
 import List from "@mui/material/List";
@@ -23,10 +16,24 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { Close } from "@mui/icons-material";
+import axios from "../../api/axios";
+import { Link } from "react-router-dom";
+import CircularProgress from '@mui/material/CircularProgress';
+import "../../assets/styles/Header2.scss"
 
 const Header2 = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [categories, setCategories] = useState([]);
+  const [categoryLoading, setCategoryLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get("/categories").then((res) => {
+      setCategories(res.data.data);
+      setCategoryLoading(false)
+    });
+  }, []);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -87,17 +94,10 @@ const Header2 = () => {
       }}
     >
       <Box sx={{ marginLeft: 3 }}>
-        <Button
-          id="basic-button"
-          aria-controls={open ? "basic-menu" : undefined}
-          aria-haspopup="true"
+        <Button id="basic-button" aria-controls={open ? "basic-menu" : undefined} aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           onClick={handleClick}
-          sx={{
-            width: 222,
-            bgcolor: theme.palette.myColor.main,
-            color: theme.palette.text.secondary,
-          }}
+          sx={{ width: 222, bgcolor: theme.palette.myColor.main, color: theme.palette.text.secondary, }}
         >
           <WindowIcon />
           <Typography
@@ -112,29 +112,33 @@ const Header2 = () => {
           <Box flexGrow={1} />
           <KeyboardArrowRightIcon />
         </Button>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            "aria-labelledby": "basic-button",
-          }}
-          sx={{
-            ".MuiPaper-root": {
-              width: 222,
-              bgcolor: theme.palette.myColor.main,
-            },
-          }}
-        >
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>My account</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
+
+        <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ "aria-labelledby": "basic-button", }} sx={{ ".MuiPaper-root": { width: 300, bgcolor: theme.palette.myColor.main, }, }}>
+          {categoryLoading? 
+            <Box sx={{ display: 'flex', justifyContent: 'center'}}>
+              <CircularProgress />
+            </Box>
+            :
+            categories?.map((category) => (
+              <Link key={category.id} to={'/category'}>
+                <MenuItem onClick={handleClose} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div className="flex items-center">
+                    <img className="category_picture" src={category.picture ?? "/src/assets/images/no-Image.jpg"} alt={category.name}/>
+                    {category.name} 
+                  </div>
+                  <Typography color={'white'} fontSize={'small'} bgcolor={'gray'}
+                    sx={{ width: '20px', height: '20px', borderRadius: '25px', display: 'flex', justifyContent: 'center' }}>
+                      {category.products_count}
+                  </Typography>
+                </MenuItem>
+              </Link>
+            ))
+          }
         </Menu>
       </Box>
 
       <>
-        {useMediaQuery('(max-width:1000px)') && (
+        {useMediaQuery("(max-width:1000px)") && (
           <IconButton onClick={toggleDrawer("right", true)}>
             <MenuIcon />
           </IconButton>

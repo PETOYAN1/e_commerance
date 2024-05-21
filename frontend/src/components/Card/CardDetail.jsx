@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -9,9 +10,9 @@ import Rating from "@mui/material/Rating";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const CardDetail = () => {
+const CardDetail = ({ product }) => {
   const [value, setValue] = useState(2.35);
-
+  const imageUrl = product.images?.[0]?.url ?? "/src/assets/images/no-image.jpg";
   return (
     <>
       <Card
@@ -32,15 +33,14 @@ const CardDetail = () => {
             component="img"
             alt="green iguana"
             sx={{ height: 277 }}
-            image="src/assets/images/gaming_pc.jpg"
+            image={imageUrl}
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
-              Lizard
+              { product.name }
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Lizards are a widespread group of squamate reptiles, with over
-              6,000 species, ranging across all continents except Antarctica
+              {product.description}
             </Typography>
           </CardContent>
         </Link>
