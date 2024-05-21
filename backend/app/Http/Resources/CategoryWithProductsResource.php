@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
+use Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Hashids;
 
-class CategoryResource extends JsonResource
+class CategoryWithProductsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -22,16 +22,11 @@ class CategoryResource extends JsonResource
             'description' => $this->description,
             'picture' => asset('storage/' . $this->picture),
             'products_count' => $this->products_count,
+            'products' => ProductResource::collection($this->products) ?? null,
             'created_at' => $this->created_at->format('d-m-Y')
         ];
     }
 
-    /**
-     * Hash the ID using Hashids.
-     *
-     * @param int $id
-     * @return string
-     */
     private function hashId(int $id): string
     {
         return Hashids::encode($id);
