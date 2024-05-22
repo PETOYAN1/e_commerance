@@ -19,14 +19,14 @@ const Login = () => {
       await axios.get("http://localhost:8000/sanctum/csrf-cookie");
 
       const response = await myAxios.post("/login", { email, password })
-      .then((res) => {
-        console.log(res + "Barev");
+        console.log(response + "Barev");
         localStorage.setItem("token", response.data.token);
         axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
-      })
 
       setEmail("");
       setPassword("");
+
+      // | ZStex login exneluc hxxum kenenq home ej kam profile |
       // navigate("/");
     } catch (error) {
       if (error.response && error.response.status === 403) {
@@ -45,7 +45,7 @@ const Login = () => {
     <>
       <section className="min-h-screen">
         <div className="flex flex-col items-center justify-start px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <div className="w-full rounded-lg shadow dark:border mt-10 sm:max-w-md xl:p-0">
+          <div className="w-full rounded-lg shadow dark:border mt-10 sm:max-w-md xl:p-0 overflow-hidden">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 className="text-xl font-bold leading-tight tracking-tight md:text-2xl">
                 Sign in
@@ -57,10 +57,7 @@ const Login = () => {
                 action="#"
               >
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium "
-                  >
+                  <label htmlFor="email" className="block mb-2 text-sm font-medium ">
                     Email
                   </label>
                   <input
@@ -138,9 +135,11 @@ const Login = () => {
                 </p>
               </form>
             </div>
+            <div className="w-full flex justify-center">
+              {loading && <BarLoader color="#2563EB" width={"100%"} />}
+            </div>
           </div>
         </div>
-        {loading ?? <BarLoader color="#36d7b7" />}
       </section>
     </>
   );

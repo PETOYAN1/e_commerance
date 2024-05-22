@@ -20,7 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
         ]);
 
-        //
+        // $middleware->api([
+        //     'adminAuth' => \App\Http\Middleware\AdminAuth::class,
+        //     'superAdminAuth' => \App\Http\Middleware\SuperAdminAuth::class,
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

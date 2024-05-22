@@ -38,28 +38,69 @@ class AuthUserController extends Controller
         
     }
 
-    public function login (LogUserRequest $request) {
-        if(Auth::attempt($request->only(['email', 'password']))) {
-            $request->session()->regenerate();
-            $user = Auth::user();
+    public function login(Request $request) {
+        $credentials = $request->only('email', 'password');
+        
+        if (Auth::attempt($credentials)) {
+            $user = User::where('email', $request->email)->first();
             $token = $user->createToken('auth_token')->plainTextToken;
+            
+            switch ($user->type) {
+                case 0:
+                    // Normal user login
+                    return response()->json([
+                        'code' => 200,
+                        'message' => "Login successfully",
+                        'token' => $token,
+                        'user' => $user
+                    ], 200);
 
-            return response()->json([
-                'code' => 200,
-                'message' => "Login Successfully",
-                'token' => $token
-            ], 200);
+                case 1:
+                    // Admin user login
+                    return response()->json([
+                        'code' => 200,
+                        'message' => "Admin login successfully",
+                        'token' => $token,
+                        'user' => $user
+                    ], 200);
+
+                case 2:
+                    // Super admin user login
+                    return response()->json([
+                        'code' => 200,
+                        'message' => "Super Admin login successfully",
+                        'token' => $token,
+                        'user' => $user
+                    ], 200);
+
+                default:
+                    return response()->json([
+                        'code' => 403,
+                        'message' => "Invalid user type.",
+                    ], 403);
+            }
         } else {
             return response()->json([
                 'code' => 403,
-                'message' => "Wrong username or password.",
+                'message' => "Invalid email or password.",
             ], 403);
         }
     }
+    
 
     public function logout(Request $request) {
-        $request->user()->tokens()->delete();
-
-        return response()->noContent();
+        if (Auth::user()) {
+            $request->user()->currentAccessToken()->delete();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Logged out successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Logout failed',
+            ], 401);
+        }
     }
 }

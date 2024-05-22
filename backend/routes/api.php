@@ -21,3 +21,7 @@ Route::prefix('v1')->as('v1')->group(function () {
     ##Category Routes
     Route::resource('/categories', ProductCategoryController::class);
 });
+
+Route::group(["middleware" => ["auth:sanctum"]], function () {
+    Route::post('/v1/logout', [AuthUserController::class, 'logout']);
+});
