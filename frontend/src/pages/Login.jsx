@@ -1,25 +1,45 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "../api/axios";
+import axios from "axios";
+import myAxios from "../api/axios";
+import BarLoader from "react-spinners/BarLoader";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setError(null);
+    setLoading(true);
     try {
-      // await axios.get('/sanctum/csrf-cookie')
-      await axios.post('/login', { email, password });
+      await axios.get("http://localhost:8000/sanctum/csrf-cookie");
 
-      setEmail("")
+      const response = await myAxios.post("/login", { email, password })
+      .then((res) => {
+        console.log(res + "Barev");
+        localStorage.setItem("token", response.data.token);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+      })
+
+      setEmail("");
       setPassword("");
-      navigate('/');
-    } catch (e) {
-      console.log(e);
+      // navigate("/");
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        setPassword("");
+        setError(error.response.data.message);
+      } else {
+        setError("An unexpected error occurred. Please try again later.");
+      }
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -30,7 +50,12 @@ const Login = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight md:text-2xl">
                 Sign in
               </h1>
-              <form method="POST" onSubmit={handleLogin} className="space-y-4 md:space-y-3" action="#">
+              <form
+                method="POST"
+                onSubmit={handleLogin}
+                className="space-y-4 md:space-y-3"
+                action="#"
+              >
                 <div>
                   <label
                     htmlFor="email"
@@ -44,13 +69,10 @@ const Login = () => {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-gray-50 border  sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="bg-gray-50 border sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
                     required=""
                   />
-                  <div className="flex">
-                    <span className="text-red-400 text-sm m-1 p-2">error</span>
-                  </div>
                 </div>
                 <div>
                   <label
@@ -69,10 +91,10 @@ const Login = () => {
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required=""
                   />
-                  <div className="flex">
-                    <span className="text-red-400 text-sm m-1 p-2">error</span>
-                  </div>
                 </div>
+                {error && (
+                  <div className="text-red-400 text-sm m-1 p-2">{error}</div>
+                )}
                 <div className="flex items-center justify-between">
                   <div className="flex items-start">
                     <div className="flex items-center h-5">
@@ -81,7 +103,6 @@ const Login = () => {
                         aria-describedby="remember"
                         type="checkbox"
                         className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                        required=""
                       />
                     </div>
                     <div className="ml-3 text-sm">
@@ -94,7 +115,7 @@ const Login = () => {
                     </div>
                   </div>
                   <Link
-                    href="#"
+                    to="#"
                     className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
                   >
                     Forgot password?
@@ -104,10 +125,10 @@ const Login = () => {
                   type="submit"
                   className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
-                  Sign in
+                   Sign in
                 </button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                  Dont have an account yet?{" "}
+                  Don t have an account yet?{" "}
                   <Link
                     to="/register"
                     className="font-medium text-primary-600 hover:underline dark:text-primary-500"
@@ -119,6 +140,7 @@ const Login = () => {
             </div>
           </div>
         </div>
+        {loading ?? <BarLoader color="#36d7b7" />}
       </section>
     </>
   );

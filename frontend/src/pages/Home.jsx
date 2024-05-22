@@ -11,9 +11,8 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  const [error, setError] = useState(null)
+  // const [error, setError] = useState(null)
 
-  console.log(error);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -21,7 +20,7 @@ const Home = () => {
         setProducts(response.data.data);
         setPageCount(response.data.last_page);
       } catch (error) {
-        setError(error.response ? error.response.data : "Server Error");
+        // setError(error.response ? error.response.data : "Server Error");
       }
     };
 
