@@ -39,9 +39,6 @@ export const Navigation = () => {
                     <Link to="/login" className="text-sm flex items-center gap-1 text-blue-500 hover:underline">
                       <MdPerson /> Login
                     </Link>
-                    <Link to="/register" className="text-sm  text-blue-500 hover:underline">
-                        Register
-                    </Link>
                     <Header/>
                 </div>
             </div>

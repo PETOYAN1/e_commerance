@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import WindowIcon from "@mui/icons-material/Window";
 import { Box, Container, IconButton, SwipeableDrawer, Typography, useMediaQuery, } from "@mui/material";
@@ -13,8 +13,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { Close } from "@mui/icons-material";
 import axios from "../../api/axios";
 import { Link } from "react-router-dom";
@@ -42,7 +40,7 @@ const Header2 = () => {
   };
   const theme = useTheme();
 
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     top: false,
     left: false,
     bottom: false,
@@ -69,11 +67,11 @@ const Header2 = () => {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+        {["Inbox", "Starred", "Send email", "Drafts", "Settings"].map((text) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>

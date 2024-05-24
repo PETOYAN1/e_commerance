@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LogUserRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -52,7 +53,7 @@ class AuthUserController extends Controller
                         'code' => 200,
                         'message' => "Login successfully",
                         'token' => $token,
-                        'user' => $user
+                        'user' => new UserResource($user)
                     ], 200);
 
                 case 1:
@@ -61,7 +62,7 @@ class AuthUserController extends Controller
                         'code' => 200,
                         'message' => "Admin login successfully",
                         'token' => $token,
-                        'user' => $user
+                        'user' => new UserResource($user)
                     ], 200);
 
                 case 2:
@@ -70,7 +71,7 @@ class AuthUserController extends Controller
                         'code' => 200,
                         'message' => "Super Admin login successfully",
                         'token' => $token,
-                        'user' => $user
+                        'user' => new UserResource($user)
                     ], 200);
 
                 default:
