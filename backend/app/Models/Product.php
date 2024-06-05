@@ -16,7 +16,10 @@ class Product extends Model
         'price',
         'category_id',
         'disCount_id',
+        'brand_id'
     ];
+
+    
 
     public function category() {
         return $this->belongsTo(Category::class);
@@ -30,7 +33,15 @@ class Product extends Model
         return $this->hasMany(Images::class);
     }
 
-    public function Brand() {
+    public function brand() {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function color() {
+        return $this->belongsTo(Color::class);
+    }
+
+    public function productEntry() {
+        return $this->hasMany(ProductEntry::class);
     }
 }

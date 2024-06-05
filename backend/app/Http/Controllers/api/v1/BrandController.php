@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BrandResource;
+use App\Http\Resources\ShowBrandResource;
 use App\Models\Brand;
 use Exception;
 use Illuminate\Http\Request;
@@ -16,20 +17,19 @@ class BrandController extends Controller
     public function index()
     {
         try {
-            $brandsWithProducts = Brand::with("products")->get();
+            $brands = Brand::with('products')->orderByDesc('id')->get();
 
-            if ($brandsWithProducts) {
+            if ($brands) {
                 return response()->json([
                     'code' => 200,
-                    'data' => BrandResource::collection($brandsWithProducts)
+                    'data' => BrandResource::collection($brands)
                 ]);
             } else {
                 return response()->json([
                     'message' => "Data not found"
                 ]);
             }
-
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'code' => 500,
                 'message' => 'Internal Server Error',
@@ -50,9 +50,27 @@ class BrandController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Brand $brand)
     {
-        //
+        try {
+            $brandsWithProducts = Brand::with("products")->find($brand->id);
+            if ($brandsWithProducts) {
+                return response()->json([
+                    'code' => 200,
+                    'data' => new ShowBrandResource($brandsWithProducts)
+                ]);
+            } else {
+                return response()->json([
+                    'message' => "Data not found"
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'code' => 500,
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
 
