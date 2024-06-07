@@ -12,4 +12,5 @@ class Material extends Model
     protected $fillable = [
         'material'
     ];
+
 }

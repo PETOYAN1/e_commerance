@@ -20,8 +20,10 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Product::query()->with(['category', 'discount', 'Images']);
-            $perPage = 5;
+            $query = Product::query()
+                ->with(['category', 'discount', 'Images', 'brand', 'productEntry.size', 'productEntry.color', 'productEntry.material'])
+                ->orderByDesc('id');
+            $perPage = 10;
             $page = $request->input("page", 1);
             $search = $request->input("search");
 
@@ -56,15 +58,15 @@ class ProductController extends Controller
         try {
             $validData = $request->validated();
             $imageData = [];
-    
+
             $imageFile = $validData['images'];
-    
+
             if (count($imageFile) > 8) {
                 return response()->json([
                     'message' => "You can upload a maximum of 8 images"
                 ], 400);
             }
-    
+
             if ($imageFile) {
                 $product = new Product();
                 $product->name = $validData['name'];
@@ -78,9 +80,9 @@ class ProductController extends Controller
                     $imageName = $this->generateUniqueImageName($image);
                     $path = "product_images/";
                     Storage::disk('public')->put($path . $imageName, file_get_contents($image));
-        
+
                     $imageData[] = [
-                        'product_id' => $product->id, 
+                        'product_id' => $product->id,
                         'image' => $path . $imageName,
                     ];
                 }
@@ -109,7 +111,7 @@ class ProductController extends Controller
             ]);
         }
     }
-    
+
 
     private function generateUniqueImageName($image)
     {
@@ -121,13 +123,14 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         try {
-            
-            $product = Product::with('category', 'discount', 'Images')->find($product->id);
+
+            $product = Product::with('category', 'discount', 'Images', 'brand', 'productEntry')
+                ->find($product->id);
 
             if (!$product) {
                 return response()->noContent();
             }
-            
+
             if (!$product) {
                 return response()->json([
                     'code' => 404,
@@ -137,7 +140,7 @@ class ProductController extends Controller
 
             return response()->json([
                 'code' => 200,
-                'data' => new ProductResource($product)
+                'data' =>  new ProductResource($product)
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -149,7 +152,7 @@ class ProductController extends Controller
     }
 
     public function update(UpdateProductRequest $request, Product $product)
-    {   
+    {
         try {
             $productWithDetails = Product::with('category', 'discount', 'Images')->findOrFail($product->id);
             $validData = $request->validated();
@@ -185,10 +188,12 @@ class ProductController extends Controller
     }
 
 
-    public function destroy (Product $product) {
+    public function destroy(Product $product)
+    {
         try {
-            $productWithDetails = Product::with('category', 'discount', 'Images')->findOrFail($product->id);
-            
+            $productWithDetails =
+                Product::with('category', 'discount', 'Images', 'brand', 'productEntry.size', 'productEntry.color', 'productEntry.material')->findOrFail($product->id);
+
             foreach ($productWithDetails->images as $image) {
                 Storage::disk('public')->delete($image->image);
             }
@@ -198,8 +203,7 @@ class ProductController extends Controller
             $productWithDetails->delete();
 
             return response()->noContent();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'code' => 500,
                 'message' => 'Internal Server Error',
@@ -207,6 +211,4 @@ class ProductController extends Controller
             ], 500);
         }
     }
-    
 }
-

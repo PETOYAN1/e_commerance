@@ -17,12 +17,12 @@ class ProductCategoryController extends Controller
     public function index()
     {
         try {
-            $categoryWithProducts = Category::withCount('Products')->get();
-
+            // $categoryWithProducts = Category::withCount('Products')->get();
+            $categoryWithProducts = Category::with('children')->whereNull('parent_id')->withCount('products')->get();
             if ($categoryWithProducts) {
                 return response()->json([
                     'code' => 200,
-                    'data' => CategoryResource::collection($categoryWithProducts)
+                    'data' =>  CategoryResource::collection($categoryWithProducts)
                 ], 200);
             } else {
                 return response()->noContent();

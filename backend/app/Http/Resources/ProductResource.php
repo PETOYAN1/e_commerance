@@ -23,6 +23,8 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'images' => ImageResource::collection($this->images) ?? null,
             'category' => $this->category->name ?? null,
+            'brand' => $this->brand->b_name ?? null,
+            'about_product' => ProductEntryResource::collection($this->productEntry) ?? null,
             'dis_count' => $this->discounts->percent ?? null,
         ];
     }

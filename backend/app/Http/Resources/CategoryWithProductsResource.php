@@ -16,7 +16,7 @@ class CategoryWithProductsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->hashId($this->id),
+            'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
@@ -27,8 +27,8 @@ class CategoryWithProductsResource extends JsonResource
         ];
     }
 
-    private function hashId(int $id): string
-    {
-        return Hashids::encode($id);
-    }
+    // private function hashId(int $id): string
+    // {
+    //     return Hashids::encode($id);
+    // }
 }

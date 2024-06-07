@@ -1,0 +1,39 @@
+.product_magnifier_img_container {
+  min-width: 50%;
+}
+
+.product_detail_container {
+  min-width: 50%;
+  height: 100%;
+
+  article {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    
+    h2 {
+        font-size: 30px;
+    }
+  }
+}
+
+.product_params {
+  position: relative;
+  display: inline-block;
+  vertical-align: bottom;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 20px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-bottom: 1px dashed #d3d4dd;
+  }
+}

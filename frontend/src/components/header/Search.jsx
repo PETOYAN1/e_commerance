@@ -54,7 +54,7 @@ const Search = () => {
         <StyledInputBase
           sx={{ width: "100%" }}
           placeholder="Search…"
-          inputProps={{ "aria-label": "search", "className" : "w-full" }}
+          inputProps={{ "aria-label": "search" }}
         />
       </Search>
     </>

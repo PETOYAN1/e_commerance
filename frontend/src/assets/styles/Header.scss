@@ -1,0 +1,20 @@
+.products_link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    color: inherit;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.15s ease-in-out;
+  
+    &:hover .product_icon {
+      transform: translateX(5px);
+    }
+  }
+  
+  .product_icon {
+    display: flex;
+    align-items: center;
+    transition: transform 0.15s ease-in-out;
+  }
