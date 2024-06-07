@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LogUserRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
+use App\Mail\UserVerification;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthUserController extends Controller
 {
@@ -27,6 +29,8 @@ class AuthUserController extends Controller
             ]);
             
             $user->save();
+            
+            Mail::to($user->email)->send(new UserVerification($user));
 
             return response()->json([
                 'code' => 200,
@@ -46,6 +50,11 @@ class AuthUserController extends Controller
             $user = User::where('email', $request->email)->first();
             $token = $user->createToken('auth_token')->plainTextToken;
             
+            if ($user->hasVerifiedEmail()) {
+
+                return response()->json(['code' => 403, 'message' => 'Email not verified.'], 403);
+            }
+
             switch ($user->type) {
                 case 0:
                     // Normal user login

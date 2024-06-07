@@ -92,6 +92,66 @@ $background-color_1: transparent;
   }
 }
 
+.checkbox-wrapper-29 {
+  --size: 15px;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .promoted-input-checkbox {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+  input {
+    &:checked {
+      ~ {
+        svg {
+          height: calc(var(--size) * 0.6);
+          -webkit-animation: draw-checkbox-28 ease-in-out 0.2s forwards;
+          animation: draw-checkbox-28 ease-in-out 0.2s forwards;
+        }
+      }
+    }
+  }
+  label {
+    &:active {
+      &::after {
+        background-color: $background-color_1;
+      }
+    }
+    user-select: none;
+    font-size: 15px;
+    line-height: var(--size);
+    cursor: pointer;
+    position: relative;
+    &:after {
+      content: "";
+      height: var(--size);
+      width: var(--size);
+      margin-right: 8px;
+      float: left;
+      border: 2px solid #9333EA;
+      border-radius: 3px;
+      transition: 0.15s all ease-out;
+    }
+  }
+  svg {
+    stroke: #9333EA;
+    stroke-width: 3px;
+    height: 0;
+    width: calc(var(--size) * 0.6);
+    position: absolute;
+    left: calc(var(--size) * 0.21);
+    top: calc(var(--size) * 0.2);
+    stroke-dasharray: 33;
+  }
+}
 
 .colors_container {
   display: flex;

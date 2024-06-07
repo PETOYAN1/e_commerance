@@ -24,9 +24,9 @@ class FilterProductController extends Controller
                 $query->where('brand_id', $request->brand_id);
             }
 
-            if ($request->has('color_id') && !empty($request->color)) {
+            if ($request->has('color_id') && !empty($request->color_id)) {
                 $query->whereHas('productEntry.color', function ($q) use ($request) {
-                    $q->where('id', $request->color);
+                    $q->where('id', $request->color_id);
                 });
             }
 

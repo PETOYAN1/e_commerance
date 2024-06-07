@@ -6,6 +6,7 @@ use App\Http\Controllers\api\v1\ColorController;
 use App\Http\Controllers\api\v1\FilterProductController;
 use App\Http\Controllers\api\v1\ProductCategoryController;
 use App\Http\Controllers\api\v1\ProductController;
+use App\Http\Controllers\api\v1\VerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/register', 'register');
         Route::post('/login', 'login')->name('login');
     });
+    
+    // Verify Email
+    Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name('api.v1.verification.verify');
+
     // Product Routes
     Route::apiResource('/products', ProductController::class);
 

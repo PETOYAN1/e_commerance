@@ -223,14 +223,16 @@ export default function Products() {
                     </svg>
                   </div>
                   {subCategoryShow[category.id] &&
-                    category?.children.map((subCategory, subIndex) => (
+                    category?.children.map((subCategory) => (
                       <div
-                        className={`checkbox-wrapper-28 my-[5px] overflow-hidden`}
+                        className={`checkbox-wrapper-29 my-[5px] overflow-hidden ml-5`}
                         key={subCategory.id}
                       >
+                        {console.log(subCategory)}
                         <input
-                          id={`subCategory-${subIndex}`}
+                          id={`subCategory-${subCategory.id}`}
                           type="checkbox"
+                          style={{ width: '2px' }}
                           className="promoted-input-checkbox"
                           onChange={(e) => handleCategoryChange(e)}
                           value={subCategory.id}
@@ -238,7 +240,7 @@ export default function Products() {
                         <svg>
                           <use xlinkHref="#checkmark-28" />
                         </svg>
-                        <label htmlFor={`subCategory-${subIndex}`}>
+                        <label htmlFor={`subCategory-${subCategory.id}`} className="text-small">
                           {subCategory.name}{" "}
                           <small>{subCategory.products_count}</small>
                         </label>

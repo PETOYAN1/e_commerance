@@ -37,7 +37,7 @@ export default function ScrollToTop() {
             : "opacity-0 invisible scale-0"
         }`}
       >
-        <Fab color="primary" sx={{ backgroundColor: '#90CAF9' }} aria-label="add" onClick={handleScrollToTop}>
+        <Fab color="primary" sx={{ backgroundColor: '#9333EA', color: '#fff' }} aria-label="add" onClick={handleScrollToTop}>
           <KeyboardArrowUpIcon />
         </Fab>
       </div>

@@ -14,7 +14,6 @@ class ColorController extends Controller
         try {
             $colors = Color::all();
 
-
             if ($colors) {
                 return response()->json([
                     'code' => 200,
