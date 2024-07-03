@@ -10,7 +10,9 @@ import "../../../assets/styles/Slider.scss";
 import { Pagination, Navigation } from 'swiper/modules';
 import { Link } from 'react-router-dom';
 
+
 const SliderSwiper = () => {
+
   return (
     <>
       <Swiper

@@ -10,6 +10,7 @@ $background-color_1: transparent;
   align-items: start;
   justify-content: space-between;
   gap: 15px;
+  
   .filter_container {
     position: sticky;
     top: 90px;
@@ -18,15 +19,70 @@ $background-color_1: transparent;
     min-height: calc(100vh - 142px);
     margin: 15px 0 15px 0;
     border-radius: 30px;
+    overflow-y: scroll;
     display: flex;
     flex-direction: column;
+    mask-position: left bottom;
+    -webkit-mask-image: linear-gradient(to top, transparent, black),
+      linear-gradient(to left, transparent 17px, black 17px);
+    -webkit-mask-size: 100% 20000px;
+    -webkit-mask-position: left bottom;
+    transition: mask-position 0.3s, -webkit-mask-position 0.3s;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    /* Track */
+    &::-webkit-scrollbar-track {
+      border-radius: 10px;
+    }
+     
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: grey; 
+      border-radius: 10px;
+    }
+    
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgb(103, 103, 103); 
+    }
+
+    &:hover{
+        -webkit-mask-position: left top;
+    }
   }
 
+  .filter_button {
+    position: absolute;
+    top: 50px; 
+    left: 300px;
+    z-index: 100;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .mobile_filter_container {
+    // position: relative !important;
+    // transform: translateX(-100%) !important;
+  }
+
+  .root_product_result_container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    margin-top: 15px;
+    gap: 10px;
+  }
+  
   .product_result_container {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
-    width: 80%;
+    gap: 2px;
     border-radius: 15px;
     margin-top: 15px;
   }
@@ -93,7 +149,7 @@ $background-color_1: transparent;
 }
 
 .checkbox-wrapper-29 {
-  --size: 15px;
+  --size: 20px;
   position: relative;
   display: flex;
   align-items: center;
@@ -136,13 +192,13 @@ $background-color_1: transparent;
       width: var(--size);
       margin-right: 8px;
       float: left;
-      border: 2px solid #9333EA;
+      border: 2px solid #9333ea;
       border-radius: 3px;
       transition: 0.15s all ease-out;
     }
   }
   svg {
-    stroke: #9333EA;
+    stroke: #9333ea;
     stroke-width: 3px;
     height: 0;
     width: calc(var(--size) * 0.6);
@@ -158,6 +214,7 @@ $background-color_1: transparent;
   align-items: center;
   flex-wrap: wrap;
   gap: 5px;
+  overflow: hidden;
 }
 
 .project {

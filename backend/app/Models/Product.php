@@ -16,7 +16,8 @@ class Product extends Model
         'price',
         'category_id',
         'disCount_id',
-        'brand_id'
+        'brand_id',
+        'rating'
     ];
 
     

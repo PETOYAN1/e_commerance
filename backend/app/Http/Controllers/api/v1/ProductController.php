@@ -22,14 +22,11 @@ class ProductController extends Controller
         try {
             $query = Product::query()
                 ->with(['category', 'discount', 'Images', 'brand', 'productEntry.size', 'productEntry.color', 'productEntry.material'])
-                ->orderByDesc('id');
-            $perPage = 10;
+                ->inRandomOrder();
+                
+            $perPage = 20;
             $page = $request->input("page", 1);
-            $search = $request->input("search");
-
-            if ($search) {
-                $query->where("name", "LIKE", '%' . $search . '%');
-            }
+            
             $total = $query->count();
 
             $result = $query
@@ -72,6 +69,7 @@ class ProductController extends Controller
                 $product->name = $validData['name'];
                 $product->description = $validData['description'];
                 $product->price = $validData['price'];
+                $product->rating = $validData['rating'];
                 $product->slug = Str::slug($product->name, '-');
                 $product->category_id = $validData['category_id'];
                 $product->save();
@@ -127,6 +125,12 @@ class ProductController extends Controller
             $product = Product::with('category', 'discount', 'Images', 'brand', 'productEntry')
                 ->find($product->id);
 
+            $similarProducts = Product::where('category_id', $product->category_id)
+                ->where('id', '!=', $product->id)
+                ->with('category', 'discount', 'Images', 'brand', 'productEntry')
+                ->limit(10)
+                ->get();
+
             if (!$product) {
                 return response()->noContent();
             }
@@ -140,7 +144,8 @@ class ProductController extends Controller
 
             return response()->json([
                 'code' => 200,
-                'data' =>  new ProductResource($product)
+                'data' =>  new ProductResource($product),
+                'recommended' => ProductResource::collection($similarProducts)
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -158,6 +163,7 @@ class ProductController extends Controller
             $validData = $request->validated();
             $productWithDetails->name = $validData['name'];
             $productWithDetails->description = $validData['description'];
+            $productWithDetails->rating = $validData['rating']; 
             $productWithDetails->price = $validData['price'];
             $productWithDetails->slug = Str::slug($productWithDetails->name, '-');
             $productWithDetails->category_id = $validData['category_id'];

@@ -27,6 +27,7 @@ class ProductFactory extends Factory
             "name"=> $this->faker->name(),
             "slug" => Str::slug($this->faker->unique()->name),
             "description" => $this->faker->paragraph(),
+            "rating" => $this->faker->numberBetween(0.5, 5),
             "price"=> $this->faker->randomFloat(2,0,0),
             "category_id" => $companyId ? $companyId->id : '',
             "disCount_id" => $disCountId ? $disCountId->id : '',

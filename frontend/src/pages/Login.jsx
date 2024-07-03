@@ -8,6 +8,7 @@ import { useTheme } from "@emotion/react";
 import { FaEye } from "react-icons/fa";
 import { IoEyeOff } from "react-icons/io5";
 import { Button, IconButton } from "@mui/material";
+import "../assets/styles/Basket.scss"
 
 const Login = () => {
   const [error, setError] = useState(null);
@@ -29,11 +30,11 @@ const Login = () => {
       await axios.get("http://localhost:8000/sanctum/csrf-cookie");
 
       const response = await myAxios.post("/login", data)
-        console.log(response + "Barev");
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
 
-
+console.log(response);
       // | ZStex login exneluc hxxum kenenq home ej kam profile |
       // navigate("/");
     } catch (error) {
@@ -56,7 +57,9 @@ const Login = () => {
     <>
       <section className="min-h-screen">
         <div className="flex flex-col items-center justify-start px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <div className="w-full rounded-lg shadow dark:border mt-10 sm:max-w-md xl:p-0 overflow-hidden" style={{ backgroundColor: theme.palette.myColor.main }}>
+          <div className={`w-full rounded-lg shadow dark:border mt-10 sm:max-w-md xl:p-0 overflow-hidden ${
+              theme.palette.mode == "dark" ? "bg-gray-900" : "bg-slate-300"
+            }`}>
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 className="text-xl font-bold leading-tight tracking-tight md:text-2xl">
                 Sign in
@@ -71,9 +74,14 @@ const Login = () => {
                     Email
                   </label>
                   <input
-                    type="email"
+                    type="
+                    "
                     placeholder="name@company.com"
-                    className={`bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                    className={`sm:text-sm rounded-lg block w-full p-2.5 ${
+                      theme.palette.mode == "dark"
+                        ? "bg-gray-700"
+                        : "bg-slate-100"
+                    }`}
                     style={{ backgroundColor: theme.palette.myColor.main }}
                     {...register("email", {required: true})} 
                     />
@@ -91,7 +99,11 @@ const Login = () => {
                       name="password"
                       id="password"
                       placeholder="••••••••"
-                      className={`bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      className={`sm:text-sm rounded-lg block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 ${
+                        theme.palette.mode == "dark"
+                          ? "bg-gray-700"
+                          : "bg-slate-100"
+                      }`}
                       style={{ backgroundColor: theme.palette.myColor.main }}
                       {...register("password", {
                         required: true,
@@ -133,7 +145,7 @@ const Login = () => {
                 </div>
                 <button
                   type="submit"
-                  className={`group-invalid:pointer-events-none group-invalid:opacity-50 ${loading && 'pointer-events-none opacity-30'} w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
+                  className={`group-invalid:pointer-events-none group-invalid:opacity-50 ${loading && 'pointer-events-none opacity-30'} w-full text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center`}
                 >
                    Sign in
                 </button>

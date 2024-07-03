@@ -27,6 +27,7 @@ class ProductRequest extends FormRequest
             'name' => ['required', 'string', 'max:250', 'min:2'],
             'description' => ['required', 'string', 'max:1000', 'min:5'],
             'price' => ['required', 'numeric', 'between:0,9999999999.99'],
+            'rating' => ['required', 'numeric', 'max:5', 'min:0'],
             'images' => 'required|max:2048',
             'category_id' => ['required', 'int'],
             'disCount_id' => ['int']

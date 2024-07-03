@@ -1,0 +1,39 @@
+.basket_pay_details_box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 7px;
+
+    .basket_section {
+      width: calc(100% / 12 * 5.99 - 24px);
+      margin: 0 12px;
+      border: 1px solid transparent;
+      padding: 24px;
+      border-radius: 20px;
+    
+      .title_btn {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px 2px;
+        width: 100%;
+        font-size: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 5px;
+      }
+    }
+}
+
+@media only screen and (max-width: 1020px) {
+    .basket_pay_details_box {
+        flex-direction: column;
+
+        .basket_section {
+            width: 100%;
+        }
+    }
+}
+

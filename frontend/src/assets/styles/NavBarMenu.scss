@@ -1,16 +1,16 @@
 .navbar {
-  // background: rgba(26, 25, 25, 0.8);
   position: fixed;
   top: 142px;
   left: 0;
   transform: translateX(-100%);
   z-index: 999;
-  min-height: calc(100vh - 144px);
+  min-height: calc(100vh - 144px) !important;
   transition: 0.2s ease-out;
 
   .menu_container {
     position: relative;
     min-width: 18.75rem;
+    overflow-y: auto;
   }
 
   .sub_menu_container {
@@ -100,6 +100,7 @@
 
   .nav_menu_ul {
     width: 100%;
+    overflow-y: auto;
 
     .nav_link {
       width: 100%;

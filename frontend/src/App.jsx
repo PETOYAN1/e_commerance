@@ -9,6 +9,10 @@ import { Outlet } from "react-router-dom";
 import ProductDetail from "./components/ProductDetail/ProductDetail";
 import ScrollToTop from "./components/scroll/ScrollToTop";
 import Products from "./components/All_products/Products";
+import SearchedResults from "./pages/SearchedResults";
+import Basket from "./pages/Basket/Basket";
+import NavbarMobileLink from "./components/Navbar_Mobile/NavbarMobileLink";
+import Profile from "./pages/Profile/Profile";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -20,7 +24,7 @@ function App() {
             <Navigation />
             <CssBaseline />
             <ScrollToTop />
-
+            <NavbarMobileLink/>
             <div className="mx-auto">
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -28,6 +32,9 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/product/:slug/:id" element={<ProductDetail />} />
                 <Route path="/products" element={<Products/>}/>
+                <Route path="/search" element={<SearchedResults/>}/>
+                <Route path="/basket" element={<Basket/>}/>
+                <Route path="/profile" element={<Profile/>}/>
               </Routes>
             </div>
             <Outlet />

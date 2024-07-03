@@ -14,11 +14,14 @@ use Illuminate\Support\Str;
 
 class ProductCategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            // $categoryWithProducts = Category::withCount('Products')->get();
-            $categoryWithProducts = Category::with('children')->whereNull('parent_id')->withCount('products')->get();
+            $limit = $request->limit;
+            $categoryWithProducts = Category::with('children')->whereNull('parent_id')->withCount('products')
+            ->limit(10)->offset($limit)
+            ->get();
+
             if ($categoryWithProducts) {
                 return response()->json([
                     'code' => 200,

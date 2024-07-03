@@ -1,36 +1,53 @@
 import { Container } from "@mui/material";
 import SliderSwiper from "../components/HomeDetails/SliderSwiper/SliderSwiper";
-import StackSection from "../components/HomeDetails/StackSection/StackSection";
 import Header2 from "../components/header/Header2";
 import CardDetail from "../components/Card/CardDetail";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "../api/axios";
 import "../assets/styles/Home.scss";
 import PaginationHome from "../components/Pagination/PaginationHome";
 import { TailSpin } from "react-loader-spinner";
 import Footer from "../components/footer/Footer";
 
+const cache = {};
+
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  // const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const productCardContainerRef = useRef(null);
 
   useEffect(() => {
     setLoading(true);
     fetchProducts();
   }, [page]);
 
-  const fetchProducts = async () => {
-    try {
-      await axios.get(`/products?page=${page}`).then((response) => {
-        setProducts(response.data.data);
-        setPageCount(response.data.last_page);
-        setLoading(false);
+  useEffect(() => {
+    if (productCardContainerRef.current) {
+      window.scrollTo({
+        top: productCardContainerRef.current.getBoundingClientRect().top + window.pageYOffset - 100,
+        behavior: 'smooth'
       });
+    }
+  }, [page]);
+
+  const fetchProducts = async () => {
+    if (cache[page]) {
+      setProducts(cache[page].data);
+      setPageCount(cache[page].last_page);
+      setLoading(false);
+      return;
+    }
+    try {
+      const response = await axios.get(`/products?page=${page}`);
+      cache[page] = response.data;  
+      setProducts(response.data.data);
+      setPageCount(response.data.last_page);
+      setLoading(false);
     } catch (error) {
-      // setError(error.response ? error.response.data : "Server Error");
+      console.error(error);
+      setLoading(false);
     }
   };
 
@@ -45,6 +62,7 @@ const Home = () => {
         width="100"
         color="#0041C2"
         ariaLabel="tail-spin-loading"
+        duration="0.1"
         radius="0"
         wrapperStyle={{}}
         wrapperClass="homeSpinner"
@@ -56,6 +74,7 @@ const Home = () => {
   return (
     <div>
       <Header2 />
+      {page === 1 && (
       <Container
         sx={{
           mt: 2.5,
@@ -65,9 +84,9 @@ const Home = () => {
         }}
       >
         <SliderSwiper />
-        <StackSection />
       </Container>
-      <div className="product_card_container max-w-screen-xl flex flex-row flex-wrap gap-10 mx-auto items-center">
+      )}
+      <main ref={productCardContainerRef} className="product_card_container mt-10 justify-around max-w-[1440px] flex flex-row flex-wrap gap-3 mx-auto items-center">
         {products.map((product) => (
           <CardDetail
             key={product.id}
@@ -75,7 +94,7 @@ const Home = () => {
             loadingCard={loading}
           />
         ))}
-      </div>
+      </main>
       <PaginationHome currentPage={page} pageCount={pageCount} onPageChange={handlePageChange} />
       <Footer />
 

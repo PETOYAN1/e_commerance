@@ -1,64 +1,144 @@
-import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
+import SearchIcon from "@mui/icons-material/Search";
+import "../../assets/styles/SearchInput.scss";
+import { useTheme } from "@emotion/react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import axios from "../../api/axios";
+import { Link, useNavigate } from "react-router-dom";
+import debounce from 'lodash.debounce';
+import { useForm } from "react-hook-form";
+import { IoClose } from "react-icons/io5";
 
 const Search = () => {
-  const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    border: '1px solid #777',
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-      border: '1px solid #555'
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  }));
-  
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    cursor: 'pointer',
-  }));
-  
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'white',
-    '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: '100%',
-      },
-    },
-  }));
+  const theme = useTheme();
+  const [search, setSearch] = useState("");
+  const [openAutoComp, setOpenAutoComp] = useState(false);
+  const [autoCompleteData, setAutoCompleteData] = useState([]);
+  const [showCloseInputBtn, setsHowCloseInputBtn] = useState(false);
+  const { register, handleSubmit, setValue } = useForm();
+  const ref = useRef();
+  const navigate = useNavigate();
+
+  const debouncedSearch = useCallback(
+    debounce((searchValue) => {
+      axios.get(`/search?autocomplete=${searchValue}`).then((res) => {
+        setAutoCompleteData(res.data.data);
+      });
+    }, 200),
+    []
+  );
+
+  useEffect(() => {
+    if (search === "") {
+      setsHowCloseInputBtn(false);
+    } else {
+      setsHowCloseInputBtn(true);
+    }
+  }, [search])
+
+  function handleSearchValue(e) {
+    const value = e.target.value;
+    setSearch(value);
+    debouncedSearch(value);
+  }
+
+  function handleOpenAutoComplete() {
+    setOpenAutoComp(true);
+  }
+
+  function handleHideAutoComplete() {
+    setTimeout(() => {
+      setOpenAutoComp(false);
+    }, 300);
+  }
+
+  function handleClickAutocompleteValue(value) {
+    setValue("search", value); 
+    setOpenAutoComp(false);
+  }
+
+  function handleEmptyValue () {
+    setValue("search", ''); 
+  }
+
+  function getHighlightedText(text, highlight) {
+    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+    return (
+      <span>
+        {parts.map((part, index) =>
+          part.toLowerCase() === highlight.toLowerCase() ? (
+            <mark 
+              className="highlight" 
+              style={{ color: theme.palette.mode === 'dark' ? '#fff' : '#000' }} 
+              key={index}
+            >
+              {part}
+            </mark>
+          ) : (
+            part
+          )
+        )}
+      </span>
+    );
+  }
+
+  function handleSearch (data) {
+    handleHideAutoComplete()
+    navigate(`/search?search_query=${data.search}`);
+  } 
+
   return (
     <>
-      <Search sx={{ borderRadius: "22px", width: "47%"}}>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-          sx={{ width: "100%" }}
-          placeholder="Search…"
-          inputProps={{ "aria-label": "search" }}
-        />
-      </Search>
+      <div className="search_Container">
+        <form onSubmit={handleSubmit(handleSearch)} ref={ref} className="search_input">
+          <input
+            type="text"
+            onFocus={handleOpenAutoComplete}
+            {...register("search", {required: true,
+              onChange: (e) => {handleSearchValue(e)},
+              onBlur: () => {handleHideAutoComplete()}
+            })}
+            autoComplete="off"
+            placeholder="Type to search.."
+          />
+          <div className="icon flex items-center">
+            <span onClick={handleEmptyValue} className={`${showCloseInputBtn ? 'visible' : 'invisible'} `}><IoClose/></span>
+            <button type="submit"><SearchIcon /></button>
+          </div>
+        </form>
+        {openAutoComp && (
+          <>
+            <div
+              className={`autocom_box ${
+                theme.palette.mode === "dark" ? "bg-gray-800" : "bg-slate-100"
+              }`}
+            >
+              {autoCompleteData?.map((product) => (
+               <li key={product.id} className="hover:bg-gray-400">
+                <span className="text-gray-500"><SearchIcon /></span>
+                <Link
+                  style={linkStyle}
+                  to={`/product/${product.slug}/${product.id}`}
+                  onClick={() => handleClickAutocompleteValue(product.name)}
+                >
+                  {getHighlightedText(product.name, search)}
+                </Link>
+              </li>
+              ))}
+            </div>
+            <div className="autocom_cont"></div>
+          </>
+        )}
+      </div>
     </>
   );
-}
+};
 
-export default Search
+const linkStyle = {
+  textDecoration: "none",
+  fontWeight: 'bold',
+  width: '100%',
+  lineHeight: '40px',
+  color: "inherit", 
+};
+
+export default Search;

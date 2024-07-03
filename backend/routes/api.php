@@ -6,13 +6,13 @@ use App\Http\Controllers\api\v1\ColorController;
 use App\Http\Controllers\api\v1\FilterProductController;
 use App\Http\Controllers\api\v1\ProductCategoryController;
 use App\Http\Controllers\api\v1\ProductController;
+use App\Http\Controllers\api\v1\SearchController;
 use App\Http\Controllers\api\v1\VerificationController;
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware(['auth:sanctum'])->get('/user', [AuthUserController::class, 'authUser']);
 
 
 Route::prefix('v1')->group(function () {
@@ -22,24 +22,22 @@ Route::prefix('v1')->group(function () {
     });
     
     // Verify Email
-    Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name('api.v1.verification.verify');
-
+    Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name('verification.verify');
     // Product Routes
     Route::apiResource('/products', ProductController::class);
-
     // Category Routes
     Route::apiResource('/categories', ProductCategoryController::class);
-
     // Brand Routes
     Route::apiResource('/brands', BrandController::class);
-
     // Filter Route
     Route::get('/products_filter', [FilterProductController::class, 'index']);
-
     // Color Route
     Route::get('/colors', [ColorController::class, 'index']);
+    // Search Route
+    Route::get('/search', [SearchController::class, 'index']);
 });
 
 Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::post('/v1/logout', [AuthUserController::class, 'logout']);
 });
+

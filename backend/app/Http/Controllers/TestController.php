@@ -12,8 +12,8 @@ class TestController extends Controller
 {
     public function sendTestEmail()
     {
-        $user = User::first(); // Assuming you have a user in the database
-
+        $user = User::first(); 
+        
         Mail::to($user->email)->send(new UserVerification($user));
 
         return 'Test email sent';
