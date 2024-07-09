@@ -1,6 +1,22 @@
+import { useEffect } from "react";
 import { MdCheck } from "react-icons/md";
 
-export default function AlertSuccess({ CartAdded }) {
+export default function AlertSuccess({ CartAdded, textAlert, onAlertClose }) {
+  
+  useEffect(() => {
+    let handleTimeoutAlert;
+    
+    if (CartAdded) {
+      handleTimeoutAlert = setTimeout(() => {
+        onAlertClose();
+      }, 3000);
+    }
+
+    return () => {
+      clearTimeout(handleTimeoutAlert);
+    }
+  }, [CartAdded, onAlertClose]);
+  
   return (
     <div
       className={`fixed left-[50%] ${
@@ -12,7 +28,7 @@ export default function AlertSuccess({ CartAdded }) {
     >
       <MdCheck />
       <span className="text-[13px]">
-        The product has been added to the cart
+        {textAlert ?? textAlert}
       </span>
     </div>
   );

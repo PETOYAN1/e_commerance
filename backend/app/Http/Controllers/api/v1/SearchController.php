@@ -27,7 +27,8 @@ class SearchController extends Controller
                 'brand'
             ])->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'LIKE', "%$searchTerm%")
-                    ->orWhere('description', 'LIKE', "%$searchTerm%");
+                    ->orWhere('description', 'LIKE', "%$searchTerm%")
+                    ->orWhere('vendor_code', 'LIKE', "%$searchTerm%");
             })
                 ->orWhereHas('category', function ($query) use ($searchTerm) {
                     $query->where('name', 'LIKE', "%$searchTerm%");

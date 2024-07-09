@@ -17,6 +17,7 @@ import "../../assets/styles/Navigation.scss";
 import { useTheme } from "@emotion/react";
 import { useSelector } from "react-redux";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { GrFavorite } from "react-icons/gr";
 
 export const Navigation = () => {
   const theme = useTheme();
@@ -153,6 +154,11 @@ export const Navigation = () => {
               <Search />
             </div>
             <div className="basket_root_box flex items-center justify-normal gap-2">
+              <Link to={`${ !isLoggedIn ? '/login' : '/favorite' }`} className="text-gray-100">
+                  <IconButton>
+                    <GrFavorite color="#f2f2f2"/>
+                  </IconButton>
+              </Link>
               <Link to={"/basket"}>
                 <IconButton aria-label="cart" sx={{ color: grey[100] }}>
                   <StyledBadge

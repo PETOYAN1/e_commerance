@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\v1\AuthUserController;
 use App\Http\Controllers\api\v1\BrandController;
 use App\Http\Controllers\api\v1\ColorController;
+use App\Http\Controllers\api\v1\FavoriteController;
 use App\Http\Controllers\api\v1\FilterProductController;
 use App\Http\Controllers\api\v1\ProductCategoryController;
 use App\Http\Controllers\api\v1\ProductController;
@@ -12,15 +13,13 @@ use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:sanctum'])->get('/user', [AuthUserController::class, 'authUser']);
-
 
 Route::prefix('v1')->group(function () {
-    Route::controller(AuthUserController::class)->group(function() {
+    Route::controller(AuthUserController::class)->group(function () {
         Route::post('/register', 'register');
         Route::post('/login', 'login')->name('login');
     });
-    
+
     // Verify Email
     Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name('verification.verify');
     // Product Routes
@@ -35,9 +34,12 @@ Route::prefix('v1')->group(function () {
     Route::get('/colors', [ColorController::class, 'index']);
     // Search Route
     Route::get('/search', [SearchController::class, 'index']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('favorites/toggle', [FavoriteController::class, 'toggle']);
+        Route::get('favorite', [FavoriteController::class, 'index']);
+        Route::post('logout', [AuthUserController::class, 'logout']);
+    });
 });
 
-Route::group(["middleware" => ["auth:sanctum"]], function () {
-    Route::post('/v1/logout', [AuthUserController::class, 'logout']);
-});
-
+Route::middleware(['auth:sanctum'])->get('/user', [AuthUserController::class, 'authUser']);

@@ -81,10 +81,26 @@ const Search = () => {
     );
   }
 
-  function handleSearch (data) {
-    handleHideAutoComplete()
-    navigate(`/search?search_query=${data.search}`);
-  } 
+  async function handleSearch(data) {
+    const inputValue = data.search.trim();
+    const isVendorCode = /^\d+$/.test(inputValue);
+    if (isVendorCode) {
+      try {
+        const response = await axios.get(`/product/${inputValue}`);
+        const product = response.data;
+        if (product) {
+          navigate(`/product/${product.slug}/${product.id}`);
+        } else {
+          console.error(`Product with vendor code ${inputValue} not found.`);
+        }
+      } catch (error) {
+        console.error(`Error fetching product with vendor code ${inputValue}: `, error);
+      }
+    } else {
+      navigate(`/search?search_query=${inputValue}`);
+    }
+    handleHideAutoComplete();
+  }
 
   return (
     <>

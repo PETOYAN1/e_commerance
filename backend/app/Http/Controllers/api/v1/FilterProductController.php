@@ -16,6 +16,11 @@ class FilterProductController extends Controller
         try {
             $query = Product::query()->with(['category', 'discount', 'Images', 'brand', 'productEntry.size', 'productEntry.color', 'productEntry.material'])->orderByDesc('id');
 
+            $prices = $query->pluck('price');
+            $minPrice = $prices->min();
+            $maxPrice = $prices->max();
+    
+
             if ($request->has('category_id') && !empty($request->category_id)) {
                 $query->where('category_id', $request->category_id);
             }
@@ -49,7 +54,9 @@ class FilterProductController extends Controller
                 'code' => 200,
                 'current_page' => $page,
                 'last_page' => ceil($total / $perPage),
-                'data' => ProductResource::collection($result)
+                'data' => ProductResource::collection($result),
+                'min_price' => $minPrice,
+                'max_price' => $maxPrice
             ], 200);
         } catch (Exception $e) {
             return response()->json([

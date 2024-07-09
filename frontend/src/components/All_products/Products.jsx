@@ -12,7 +12,6 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CardSize from "../Card/CardSize";
-import { useSearchParams } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { FaFilter } from "react-icons/fa";
 
@@ -33,8 +32,8 @@ export default function Products() {
   const [loadProducts, setLoadProducts] = useState(true);
   const [visibleMoreCategories, setVisibleMoreCategories] = useState(5);
   const [visibleMoreBrands, setVisibleMoreBrands] = useState(5);
-  const [minPrice, setMinPrice] = useState(100);
-  const [maxPrice, setMaxPrice] = useState(1500);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
   const matches = useMediaQuery('(max-width:1020px)');
   const theme = useTheme();
 
@@ -43,8 +42,9 @@ export default function Products() {
   }, []);
 
   useEffect(() => {
-    getProducts();
+      getProducts();
   }, [page, selectedCategories, selectedBrands, selectedColors, minPrice, maxPrice]);
+
 
   const getProducts = useCallback(() => {
     setLoadProducts(true);
@@ -55,11 +55,15 @@ export default function Products() {
           category_id: selectedCategories,
           brand_id: selectedBrands,
           color: selectedColors,
+          min_price: minPrice,
+          max_price: maxPrice,
         },
       })
       .then((res) => {
         setPageCount(res.data.last_page);
         setProducts(res.data.data);
+        setMinPrice(res.data.min_price);
+        setMaxPrice(res.data.max_price)
         setLoadProducts(false);
       })
       .catch(() => {
@@ -164,6 +168,13 @@ export default function Products() {
       setVisibleMoreBrands(5);
     }
   };
+
+  const handleTruncateText = (text, maxLength) => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + '...';
+  };
   return (
     <>
       <div className="products_container max-w-[1500px] mx-auto">
@@ -176,30 +187,32 @@ export default function Products() {
             <FaFilter />
           </button>
           <div className="relative">
-            {/* <div className="relative mb-6">
+            <div className="relative mb-6">
               <label htmlFor="min-price" className="sr-only">Min price</label>
+              From
               <input
                 id="min-price"
                 type="number"
                 name="minPrice"
                 value={minPrice}
-                min="100"
+                min={minPrice}
                 max={maxPrice}
-                className="w-full mb-2 p-1 border rounded"
+                className="w-full mb-2 p-1 border rounded bg-transparent shadow-2xl"
                 onChange={handlePriceChange}
               />
               <label htmlFor="max-price" className="sr-only">Max price</label>
+              To
               <input
                 id="max-price"
                 type="number"
                 name="maxPrice"
                 value={maxPrice}
                 min={minPrice}
-                max="1500"
-                className="w-full mb-2 p-1 border rounded"
+                max={maxPrice}
+                className="w-full mb-2 p-1 border rounded bg-transparent shadow-2xl"
                 onChange={handlePriceChange}
               />
-            </div> */}
+            </div>
             <div className="flex flex-col ">
               <h2
                 className="w-full flex items-center justify-between cursor-pointer"
@@ -245,7 +258,7 @@ export default function Products() {
                                 htmlFor={`category-${index}`}
                                 className="cursor-pointer flex justify-between items-center gap-2"
                               >
-                                {category.name}
+                                {handleTruncateText(category.name, 20)}
                                 <small className="text-[11px] text-gray-500">
                                   {category.products_count}
                                 </small>

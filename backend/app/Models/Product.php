@@ -17,7 +17,8 @@ class Product extends Model
         'category_id',
         'disCount_id',
         'brand_id',
-        'rating'
+        'rating',
+        'vendor_code'
     ];
 
     

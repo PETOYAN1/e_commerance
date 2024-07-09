@@ -2,7 +2,7 @@
 import Button from "@mui/material/Button";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import { TiStarFullOutline } from "react-icons/ti";
@@ -41,6 +41,16 @@ export function CardDetail({ product, loadingCard }) {
     });
   }
 
+  // const handleTimeoutAlert = setTimeout(() => {
+  //   setShowAlert(false);
+  // }, 3000);
+
+  // useEffect(() => {
+  //   return () => {
+  //     clearTimeout(handleTimeoutAlert);
+  //   }
+  // }, [showAlert])
+  
   function handleAddToCart() {
     dispatch(
       addToCart({
@@ -49,9 +59,6 @@ export function CardDetail({ product, loadingCard }) {
       })
     );
     setShowAlert(true)
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000);
   }
   return (
     <article className={`card_wrapper ${cardSizeClass}`}>
@@ -100,8 +107,7 @@ export function CardDetail({ product, loadingCard }) {
                 <small>({product.rating})</small>
               </span>
               {productAlreadyExists ? (
-                <Link
-                className="to_basket_link" to={"/basket"}>
+                <Link  className="to_basket_link" to={"/basket"}>
                   In the basket
                 </Link>
               ) : (
@@ -127,7 +133,11 @@ export function CardDetail({ product, loadingCard }) {
               )}
             </div>
           </div>
-           <AlertSuccess CartAdded={showAlert} />
+          <AlertSuccess
+            CartAdded={showAlert}
+            textAlert="The product has been added to the cart"
+            onAlertClose={() => setShowAlert(false)}
+          />
         </>
       )}
     </article>

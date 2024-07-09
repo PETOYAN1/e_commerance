@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 import UserProfileMobile from "./UserProfileMobile";
 import MenuMobile from "./MenuMobile";
 import myAxios from "../../api/axios";
+import { MdFavoriteBorder } from "react-icons/md";
+import { MdOutlineFavorite } from "react-icons/md";
 
 export default function NavbarMobileLink() {
   const theme = useTheme();
@@ -32,12 +34,20 @@ export default function NavbarMobileLink() {
   const [isShowUserProfile, setIsShowUserProfile] = useState(false);
   const [isShowMenu, setIsShowMenu] = useState(false);
   const locationHref = location.pathname === "/login" ? "/login" : "/register";
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     myAxios.get('/categories').then((res) => {
       setCategoryData(res.data.data);
     })
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, [])
 
   function handleShowUserProfile () {
     setIsShowUserProfile(true);
@@ -83,9 +93,28 @@ export default function NavbarMobileLink() {
           </Link>
         </li>
         <li>
+          <Link to={`${ !isLoggedIn ? '/login' : '/favorite' }`} className="text-gray-100">
+            <IconButton sx={{ fontSize: "30px", color: location.pathname === "/favorite" ? blue[600] : grey[100] }}>
+              {location.pathname === "/favorite" ? (
+                <MdOutlineFavorite />
+              ) : (
+                <MdFavoriteBorder color="#f2f2f2"/>
+              )
+            }
+            </IconButton>
+          </Link>
+        </li>
+        <li>
+          {!isLoggedIn ? (
             <IconButton onClick={handleShowUserProfile}>
               <PersonIcon sx={{ color: location.pathname === locationHref ? blue[600] : grey[100], fontSize: '30px'}} />
             </IconButton>
+          ): (
+            <Link to={'/profile'}>
+              <PersonIcon sx={{ color: location.pathname === '/profile' ? blue[600] : grey[100], fontSize: '30px'}} />
+            </Link>            
+          )
+        }
         </li>
       </ul>
     </div>
