@@ -2,8 +2,8 @@
 import Button from "@mui/material/Button";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import { TiStarFullOutline } from "react-icons/ti";
 import { FaCartShopping } from "react-icons/fa6";
@@ -11,12 +11,19 @@ import "../../assets/styles/Card.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../store/cart";
 import AlertSuccess from "../AlertSuccess/AlertSuccess";
+import myAxios from "../../api/axios";
+import { useAuth } from "../../hooks/useAuth";
 
-export function CardDetail({ product, loadingCard }) {
-  const [isFavorite, setIsFavorite] = useState(false);
+
+export function CardDetail({ product, loadingCard, isFavorite: initialFavorite }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isFavorite, setIsFavorite] = useState(initialFavorite);
   const [searchParams] = useSearchParams();
   const cardSize = searchParams.get("cardsize") || "small";
   const imageUrl = product?.images?.[0]?.url ?? "/src/assets/images/no-image.jpg";
+  const [addedFavorite, setAddedFavorite] = useState(false);
+  const [addedFavoriteMessage, setAddedFavoriteMessage] = useState("");
   const carts = useSelector((store) => store.cart.items);
   const productAlreadyExists = carts.some(
     (cart) => cart.productId === product.id
@@ -29,6 +36,16 @@ export function CardDetail({ product, loadingCard }) {
   }
 
   function handleFavoriteActive() {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    myAxios.post('/favorites/toggle', { product_id: product?.id })
+      .then((res) => {
+        setAddedFavoriteMessage(res.data.message)
+        setAddedFavorite(true);
+      })
     setIsFavorite(!isFavorite);
   }
 
@@ -40,16 +57,6 @@ export function CardDetail({ product, loadingCard }) {
       top: 0,
     });
   }
-
-  // const handleTimeoutAlert = setTimeout(() => {
-  //   setShowAlert(false);
-  // }, 3000);
-
-  // useEffect(() => {
-  //   return () => {
-  //     clearTimeout(handleTimeoutAlert);
-  //   }
-  // }, [showAlert])
   
   function handleAddToCart() {
     dispatch(
@@ -137,6 +144,11 @@ export function CardDetail({ product, loadingCard }) {
             CartAdded={showAlert}
             textAlert="The product has been added to the cart"
             onAlertClose={() => setShowAlert(false)}
+          />
+          <AlertSuccess
+            CartAdded={addedFavorite}
+            textAlert={addedFavoriteMessage}
+            onAlertClose={() => setAddedFavorite(false)}
           />
         </>
       )}

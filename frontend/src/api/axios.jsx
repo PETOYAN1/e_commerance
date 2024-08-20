@@ -5,9 +5,4 @@ const myAxios = axios.create({
   withCredentials: true,
 });
 
-myAxios.interceptors.request.use(async (config) => {
-  const csrf = await axios.get("http://localhost:8000/sanctum/csrf-cookie");
-  return config;
-});
-
 export default myAxios;

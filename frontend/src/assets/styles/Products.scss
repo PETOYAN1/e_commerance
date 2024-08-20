@@ -12,39 +12,26 @@ $background-color_1: transparent;
   gap: 15px;
   
   .filter_container {
-    position: sticky;
-    top: 90px;
-    max-width: 300px;
-    min-width: 300px;
-    min-height: calc(100vh - 142px);
-    margin: 15px 0 15px 0;
-    border-radius: 30px;
-    overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
     mask-position: left bottom;
-    -webkit-mask-image: linear-gradient(to top, transparent, black),
-      linear-gradient(to left, transparent 17px, black 17px);
-    -webkit-mask-size: 100% 20000px;
-    -webkit-mask-position: left bottom;
-    transition: mask-position 0.3s, -webkit-mask-position 0.3s;
+    // -webkit-mask-image: linear-gradient(to top, transparent, black),
+    //   linear-gradient(to left, transparent 17px, black 17px);
+    // -webkit-mask-size: 100% 20000px;
+    // -webkit-mask-position: left bottom;
+    // transition: mask-position 0.3s, -webkit-mask-position 0.3s;
 
     &::-webkit-scrollbar {
       width: 8px;
     }
     
-    /* Track */
     &::-webkit-scrollbar-track {
       border-radius: 10px;
     }
      
-    /* Handle */
     &::-webkit-scrollbar-thumb {
       background: grey; 
       border-radius: 10px;
     }
     
-    /* Handle on hover */
     &::-webkit-scrollbar-thumb:hover {
       background: rgb(103, 103, 103); 
     }
@@ -52,21 +39,6 @@ $background-color_1: transparent;
     &:hover{
         -webkit-mask-position: left top;
     }
-  }
-
-  .filter_button {
-    position: absolute;
-    top: 50px; 
-    left: 300px;
-    z-index: 100;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-
-  .mobile_filter_container {
-    // position: relative !important;
-    // transform: translateX(-100%) !important;
   }
 
   .root_product_result_container {
@@ -272,6 +244,15 @@ $background-color_1: transparent;
 .project .boxes .box label p {
   font-size: 20px;
   font-weight: 600;
+}
+
+
+.color-container {
+  display: flex;
+  max-width: 300px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
 }
 
 @-webkit-keyframes draw-checkbox-28 {

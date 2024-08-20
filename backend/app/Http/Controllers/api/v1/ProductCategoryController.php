@@ -18,7 +18,7 @@ class ProductCategoryController extends Controller
     {
         try {
             $limit = $request->limit;
-            $categoryWithProducts = Category::with('children')->whereNull('parent_id')->withCount('products')
+            $categoryWithProducts = Category::with('children')->whereNull('parent_id')
             ->limit(10)->offset($limit)
             ->get();
 

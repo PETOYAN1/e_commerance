@@ -20,7 +20,7 @@ const Search = () => {
 
   const debouncedSearch = useCallback(
     debounce((searchValue) => {
-      axios.get(`/search?autocomplete=${searchValue}`).then((res) => {
+      axios.get(`/products?autocomplete=${searchValue}`).then((res) => {
         setAutoCompleteData(res.data.data);
       });
     }, 200),

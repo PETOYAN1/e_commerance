@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import myAxios from "../api/axios";
 import BarLoader from "react-spinners/BarLoader";
 import { useForm } from "react-hook-form";
 import { useTheme } from "@emotion/react";
 import { FaEye } from "react-icons/fa";
 import { IoEyeOff } from "react-icons/io5";
-import { Button, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import "../assets/styles/Basket.scss"
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
+  const { setUser } = useAuth();
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState();
@@ -18,7 +19,6 @@ const Login = () => {
   const { register,
           handleSubmit,
           formState: { errors },
-          reset,  
       } = useForm();
   const theme = useTheme();
 
@@ -27,16 +27,14 @@ const Login = () => {
     setError(null);
     setLoading(true);
     try {
-      await axios.get("http://localhost:8000/sanctum/csrf-cookie");
-
       const response = await myAxios.post("/login", data)
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
-
-console.log(response);
-      // | ZStex login exneluc hxxum kenenq home ej kam profile |
-      // navigate("/");
+        myAxios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+        setUser(response.data.user);
+        if (response) {
+          navigate("/profile");
+        }
     } catch (error) {
       if (error.response && error.response.status === 403) {
         setError(error.response.data.message);

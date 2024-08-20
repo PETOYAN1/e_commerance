@@ -10,6 +10,21 @@ export default function navBarMenu({ categories, showMenu, setMenuOpen, isScroll
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const [subMenuData, setSubMenuData] = useState(null);
   const [categoryData, setCategoryData] = useState(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const theme = useTheme();
+  const navbarHeight = `calc(100vh - 144px + ${scrollPosition}px)`;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const preventScroll = (e) => {
@@ -30,7 +45,6 @@ export default function navBarMenu({ categories, showMenu, setMenuOpen, isScroll
     };
   }, [showMenu]);
 
-  const pictureUrl = categoryData?.picture ?? "/src/assets/images/no-image.jpg";
 
   const handleOpenSubMenu = (category) => {
     setSubMenuData(category.children);
@@ -45,12 +59,11 @@ export default function navBarMenu({ categories, showMenu, setMenuOpen, isScroll
     setCategoryData(null);
   };
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const theme = useTheme();
   return (
     <>
       <nav
-        className={`navbar ${showMenu ? "open" : ""} ${isScrolled ? "fixed top-[70px] min-h-screen" : ""} flex`}
-        style={{ backgroundColor: theme.palette.myColor.main }}
+        className={`navbar ${showMenu ? "open" : ""}  : ""} flex`}
+        style={{ backgroundColor: theme.palette.myColor.main, minHeight: navbarHeight, position: navbarHeight > '142px' ? 'fixed' : 'absolute' }}
       >
         <div className="menu_container">
           <Box sx={{ margin: "5px" }}>
@@ -65,13 +78,11 @@ export default function navBarMenu({ categories, showMenu, setMenuOpen, isScroll
                   key={category.id}
                   onMouseEnter={() => handleOpenSubMenu(category)}
                 >
-                  <li className="nav_menu_link_li" onClick={handleMenuClose}>
-                    <Link to={`/category/${category.slug}/${category.id}`} className="nav_link">
-                      {category.name}
-                      {category.children.length > 0 && (
-                        <KeyboardArrowRightIcon />
-                      )}
-                    </Link>
+                  <li className="nav_menu_link_li nav_link">
+                    {category.name}
+                    {category.children.length > 0 && (
+                      <KeyboardArrowRightIcon />
+                    )}
                   </li>
                 </div>
               ))}
@@ -79,7 +90,7 @@ export default function navBarMenu({ categories, showMenu, setMenuOpen, isScroll
           </div>
         </div>
         {subMenuOpen && subMenuData && (
-          <div className="flex w-full h-100 bg-black relative">
+          <div className="flex w-full h-100 bg-black relative" style={{ minHeight: navbarHeight }}>
             <div className="sub_menu_container min-h-screen">
               <ul
                 className="sub_menu_ul min-h-screen"
@@ -93,23 +104,11 @@ export default function navBarMenu({ categories, showMenu, setMenuOpen, isScroll
                       className="sub_link"
                     >
                       {subCategory.name}
+                      <span>{subCategory.products_count}</span>
                     </Link>
                   </li>
                 ))}
               </ul>
-
-              <div
-                className="category_image_container min-h-screen"
-                style={{ backgroundColor: theme.palette.myColor.main }}
-              >
-                <Link
-                  to={`/category/${categoryData.slug}/${categoryData.id}`}
-                >
-                  <div className="category_img_box">
-                    <img src={pictureUrl} alt="" />
-                  </div>
-                </Link>
-              </div>
             </div>
           </div>
         )}

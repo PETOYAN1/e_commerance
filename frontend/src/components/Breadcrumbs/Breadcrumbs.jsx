@@ -11,17 +11,17 @@ export default function Breadcrumbs({ category, brand }) {
     
   return (
     <div className="breadcrumbs my-3 flex items-center gap-3">
-        <IconButton onClick={handleBackClick} className="">
+        <IconButton onClick={handleBackClick} title="to back">
             <FaArrowLeft />
         </IconButton>
       <nav className="flex" aria-label="Breadcrumb">
         <ol className="inline-flex items-center text-[14px] space-x-1 md:space-x-2 rtl:space-x-reverse">
           <li className="crumb">
-            <Link to="/" className="hover:underline">Home</Link> / 
+            <Link to="/" className="hover:underline">Home</Link>
           </li>
           {category && (
             <li className="crumb">
-              <Link to={`/category/${category}`} className="hover:underline">{category}</Link> / 
+              / <Link to={`/category/${category}`} className="hover:underline">{category}</Link> / 
             </li>
           )}
           {brand && (

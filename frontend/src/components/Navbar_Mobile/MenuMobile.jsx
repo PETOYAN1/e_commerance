@@ -27,7 +27,7 @@ export default function MenuMobile({ setIsHideMobile, categoryData }) {
   }
 
   function handleOpenSubCategory (category) {
-    setSubMenuData(category.children);
+    setSubMenuData(category);
     setSubMenuOpen(true);
   }
 
@@ -37,7 +37,7 @@ export default function MenuMobile({ setIsHideMobile, categoryData }) {
   }
 
   return (
-    <div className={`fixed w-full top-0 z-[1021] ${ theme.palette.mode === "dark" ? 'bg-gray-900' : 'bg-gray-100' }`} style={{ minHeight: 'calc(100vh - 70px)' }}>
+    <div className={`fixed w-full top-0 z-[1010] ${ theme.palette.mode === "dark" ? 'bg-gray-900' : 'bg-gray-100' }`} style={{ minHeight: 'calc(100vh - 70px)' }}>
       <IconButton aria-label="home" onClick={handleHideMenuMobile} sx={{ position: 'absolute', top: 0, right: 3}}>
         <CgClose />
       </IconButton>
@@ -55,17 +55,16 @@ export default function MenuMobile({ setIsHideMobile, categoryData }) {
           ))}
         </ul>
       </div>
-
       {subMenuOpen && subMenuData && (
-        <div className={`fixed w-full top-0 z-[1021] ${ theme.palette.mode === "dark" ? 'bg-gray-900' : 'bg-gray-100' }`} style={{ minHeight: 'calc(100vh - 70px)' }}>
+        <div className={`fixed w-full top-0 z-[1009] ${ theme.palette.mode === "dark" ? 'bg-gray-900' : 'bg-gray-100' }`} style={{ minHeight: 'calc(100vh - 70px)' }}>
           <ul>
             <div className='flex items-center gap-2 mb-4'>
               <IconButton aria-label="home" onClick={handleSubMenuClose} sx={{ margin: '5px' }}>
                 <FaArrowLeftLong />
               </IconButton>
-              <h2 className="font-bold">{categoryData.name}</h2>
+              <h2 className="font-bold">{subMenuData.name}</h2>
             </div>
-            {subMenuData.map((subCategory) => (
+            {subMenuData.children?.map((subCategory) => (
                 <li key={subCategory.id}
                 className='flex justify-between p-3 w-100 select-none'
                  onClick={handleHideMenuMobile}>
@@ -75,6 +74,7 @@ export default function MenuMobile({ setIsHideMobile, categoryData }) {
                   >
                     {subCategory.name}
                   </Link>
+                  <span className='text-[14px]'>{subCategory.products_count}</span>
                 </li>
               ))}
           </ul>

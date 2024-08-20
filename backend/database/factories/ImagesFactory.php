@@ -27,9 +27,11 @@ class ImagesFactory extends Factory
         }
 
         $productId = Product::pluck('id')->random();
+        $fakerFileName = $this->faker->image(storage_path("app/product_images"), 600, 800);
 
         return [
-            "image" => 'product_images/mercedes_cls.jpg', 
+            // "image" => 'product_images/model_female_triplelayer_black_solid_mask_3000px.webp', 
+            "image" => 'product_images/'.basename($fakerFileName),
             "product_id" => $productId,
         ];
     }

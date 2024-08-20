@@ -9,6 +9,7 @@ import Skeleton from "@mui/material/Skeleton";
 import { Box } from "@mui/material";
 import gsap from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
+import { Link } from 'react-router-dom';
 
 gsap.registerPlugin(TextPlugin);
 
@@ -87,7 +88,9 @@ function CartItem({ productId, quantity, detail }) {
         <div className="md:col-span-2">
           <div className="flex flex-col max-[500px]:items-center gap-3">
             <h6 className="font-semibold text-base leading-7">
-              {detail.name}
+              <Link className='hover:text-blue-500 underline' to={`/product/${detail?.slug}/${detail?.id}`}>
+                {detail.name}
+              </Link>
             </h6>
             <h6 className="font-normal text-base leading-7 text-gray-500">
               {detail.category}

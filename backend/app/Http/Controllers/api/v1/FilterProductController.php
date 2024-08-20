@@ -22,16 +22,19 @@ class FilterProductController extends Controller
     
 
             if ($request->has('category_id') && !empty($request->category_id)) {
-                $query->where('category_id', $request->category_id);
+                $categoryIds = is_array($request->category_id) ? $request->category_id : [$request->category_id];
+                $query->whereIn('category_id', $categoryIds);
             }
 
             if ($request->has('brand_id') && !empty($request->brand_id)) {
-                $query->where('brand_id', $request->brand_id);
+                $brandIds = is_array($request->brand_id) ? $request->brand_id : [$request->brand_id];
+                $query->where('brand_id', $brandIds);
             }
 
             if ($request->has('color_id') && !empty($request->color_id)) {
-                $query->whereHas('productEntry.color', function ($q) use ($request) {
-                    $q->where('id', $request->color_id);
+                $colorIds = is_array($request->color_id) ? $request->color_id : [$request->color_id];
+                $query->whereHas('productEntry.color', function ($q) use ($colorIds) {
+                    $q->whereIn('id', $colorIds);
                 });
             }
 

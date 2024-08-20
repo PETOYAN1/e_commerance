@@ -24,7 +24,7 @@ class ProductFactory extends Factory
         $companyId = Category::inRandomOrder()->first();
         $disCountId = DisCount::inRandomOrder()->first();
         $brandId = Brand::inRandomOrder()->first();
-
+        
         return [
             "name"=> $this->faker->name(),
             "slug" => Str::slug($this->faker->unique()->name),

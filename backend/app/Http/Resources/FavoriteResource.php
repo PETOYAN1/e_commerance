@@ -15,8 +15,9 @@ class FavoriteResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'products' => new ProductResource($this->product),
-
+            'id' => $this->id,
+            'product' => new ProductResource($this->product),
+            'created_at' => $this->created_at,
         ];
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\api\v1\SearchController;
 use App\Http\Controllers\api\v1\VerificationController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 
@@ -42,4 +43,8 @@ Route::prefix('v1')->group(function () {
     });
 });
 
-Route::middleware(['auth:sanctum'])->get('/user', [AuthUserController::class, 'authUser']);
+Route::middleware(['auth:sanctum'])->get('v1/user', [AuthUserController::class, 'authUser']);
+
+Route::get('/linkstorage', function () {
+    Artisan::call('storage:link');
+});

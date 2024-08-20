@@ -2,12 +2,9 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import myAxios from "../api/axios";
 import CardDetail from "../components/Card/CardDetail";
-import { TailSpin } from "react-loader-spinner";
 import Footer from "../components/footer/Footer";
-import { GiGrass } from "react-icons/gi";
-import { MdOutlineGrass } from "react-icons/md";
-import { GiGrassMushroom } from "react-icons/gi";
 import CardSize from "../components/Card/CardSize"
+import "ldrs/ring";
 
 export default function SearchedResults() {
   const [searchParams] = useSearchParams();
@@ -30,8 +27,7 @@ export default function SearchedResults() {
   useEffect(() => {
     const handleScroll = (e) => {
       const scrollHeight = e.target.documentElement.scrollHeight;
-      const currentHeight =
-        e.target.documentElement.scrollTop + window.innerHeight;
+      const currentHeight = e.target.documentElement.scrollTop + window.innerHeight;
       if (
         currentHeight + 200 >= scrollHeight &&
         !loadingMore &&
@@ -48,12 +44,12 @@ export default function SearchedResults() {
 
   function getSearchData(newOffset, isNewSearch = false) {
     myAxios
-      .get(`/search?search=${searchQuery}&offset=${newOffset}&limit=20`)
+      .get(`/products?search=${searchQuery}`)
       .then((res) => {
         setSearchedResult((prev) =>
           isNewSearch ? res.data.data : [...prev, ...res.data.data]
         );
-        setTotalCount(res.data.total);
+        setTotalCount(res.data.meta.total);
         setLoadProducts(false);
         setLoadingMore(false);
         setOffset(newOffset);
@@ -85,18 +81,15 @@ export default function SearchedResults() {
             {loadProducts && searchedResult.length === 0 ? (
               <div
                 className="w-full flex items-center justify-center"
-                style={{ minHeight: "calc(100vh - 140px)" }}
+                style={{ minHeight: "calc(100vh - 500px)" }}
               >
-                <TailSpin
-                  visible={true}
-                  height="80"
-                  width="80"
-                  color="#0041C2"
-                  ariaLabel="tail-spin-loading"
-                  radius="0"
-                  wrapperStyle={{}}
-                  wrapperClass=""
-                />
+                <l-ring
+                  size="60"
+                  stroke="6"
+                  bg-opacity="0"
+                  speed="1.3"
+                  color="#581C87"
+                ></l-ring>
               </div>
             ) : (
               searchedResult?.map((product, index) => (
@@ -110,27 +103,13 @@ export default function SearchedResults() {
           </section>
           {loadingMore && (
             <div className="w-full flex justify-center items-center my-7">
-              <TailSpin
-                visible={true}
-                height="50"
-                width="50"
-                color="#0041C2"
-                ariaLabel="tail-spin-loading"
-                radius="0"
-                wrapperStyle={{}}
-                wrapperClass=""
-              />
-            </div>
-          )}
-          {allProductsLoaded && (
-            <div className="w-full flex items-end justify-center py-4 my-5">
-              <span className="text-[20px] text-gray-500 flex items-end">
-                <GiGrass />
-                <MdOutlineGrass />
-                <GiGrassMushroom />
-                <MdOutlineGrass />
-                <GiGrass />
-              </span>
+                <l-ring
+                  size="50"
+                  stroke="5"
+                  bg-opacity="0"
+                  speed="1.3"
+                  color="#581C87"
+                ></l-ring>
             </div>
           )}
         </div>

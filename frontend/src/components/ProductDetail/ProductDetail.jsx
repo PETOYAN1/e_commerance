@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import axios from "../../api/axios";
-import { TailSpin } from "react-loader-spinner";
 import ImageMagnifier from "../ImageMagnifier/ImageMagnifier";
 import "../../assets/styles/ProductDetail.scss";
 import { Rating, useMediaQuery } from "@mui/material";
@@ -13,6 +11,10 @@ import CardDetail from "../Card/CardDetail";
 import { FaArrowRight } from "react-icons/fa";
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs";
 import AlertSuccess from "../AlertSuccess/AlertSuccess";
+import "ldrs/ring";
+import { useTheme } from "@emotion/react";
+import myAxios from "../../api/axios";
+import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -23,6 +25,10 @@ export default function ProductDetail() {
   const dispatch = useDispatch();
   const copyVendorCode = product?.vendor_code;
   const [showAlert, setShowAlert] = useState(false);
+  const [addedFavorite, setAddedFavorite] = useState(false);
+  const [addedFavoriteMessage, setAddedFavoriteMessage] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
+  const theme = useTheme();
 
   useEffect(() => {
     if (id) {
@@ -32,7 +38,7 @@ export default function ProductDetail() {
 
   const getData = async () => {
     try {
-      const response = await axios.get(`/products/${id}`);
+      const response = await myAxios.get(`/products/${id}`);
       setProduct(response.data.data);
       setSeeAlsoProducts(response.data.recommended);
     } catch (error) {
@@ -43,18 +49,30 @@ export default function ProductDetail() {
   const productAlreadyExists = carts.some(
     (cart) => cart.productId === product?.id
   );
+
+  function handleFavoriteActive() {
+    // const { user } = useAuth();
+    // if (user) {
+      myAxios.post('/favorites/toggle', { product_id: product?.id })
+        .then((res) => {
+        setAddedFavoriteMessage(res.data.message)
+        setAddedFavorite(true);
+      })
+      setIsFavorite(!isFavorite);
+    // }
+  }
+
   if (!product) {
     return (
-      <TailSpin
-        height="100"
-        width="100"
-        color="#0041C2"
-        ariaLabel="tail-spin-loading"
-        radius="0"
-        wrapperStyle={{}}
-        wrapperClass="homeSpinner"
-        visible={true}
-      />
+      <div className="homeSpinner">
+        <l-ring
+          size="70"
+          stroke="6"
+          bg-opacity="0"
+          speed="1.3"
+          color="#581C87"
+        ></l-ring>
+      </div>
     );
   }
 
@@ -97,6 +115,9 @@ export default function ProductDetail() {
                 className="flex flex-col pb-3"
                 style={{ borderBottom: "1px solid #9a9a9a" }}
               >
+                <button onClick={handleFavoriteActive} className="text-[25px] mb-3 absolute right-[10%]">
+                  {isFavorite ? <MdFavorite color="red" /> : <MdFavoriteBorder />}
+                </button>
                 <span className="flex items-end gap-2"><Rating name="read-only" value={parseInt(product?.rating)} readOnly /> <small>({product?.rating})</small></span>
                 <h2>{product.name}</h2>
               </div>
@@ -111,7 +132,7 @@ export default function ProductDetail() {
               </label>
               <ul className="flex flex-col gap-3 mt-3">
                 <li className="product_params">
-                  <b>Vendor code</b> <span onClick={handleCopyVendorCode} className="vendor_code_text">{product?.vendor_code}</span>{" "}
+                  <b>Vendor code</b> <span className={`vendor_code_text p-1 ${ theme.palette.mode === 'dark' ? 'bg-gray-900' : 'bg-gray-100' } `} onClick={handleCopyVendorCode}>{product?.vendor_code}</span>{" "}
                 </li>
                 <li className="product_params">
                   <b>Brand</b> <span>{product?.brand}</span>{" "}
@@ -166,7 +187,10 @@ export default function ProductDetail() {
         <h2 className="text-[24px] font-[700] leading-[32px] ml-2">See also</h2>
         <div className="w-full flex justify-between flex-wrap gap-2">
           {seeAlsoProducts?.map((product) => (
-            <CardDetail key={product.id} product={product}/>
+            <CardDetail key={product.id}
+              product={product}  
+              loadingCard={false}
+            />
           ))}
         </div>
       </section>
@@ -176,6 +200,11 @@ export default function ProductDetail() {
         onAlertClose={() => setShowAlert(false)}
       />
       </div>
+      <AlertSuccess
+        CartAdded={addedFavorite}
+        textAlert={addedFavoriteMessage}
+        onAlertClose={() => setAddedFavorite(false)}
+      />
       <Footer />
     </>
   );

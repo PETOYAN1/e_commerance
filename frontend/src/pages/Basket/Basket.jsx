@@ -5,11 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import { GoPersonFill } from "react-icons/go";
 import { useTheme } from "@emotion/react";
-import { useMediaQuery } from "@mui/material";
+import { Button, useMediaQuery } from "@mui/material";
 import Footer from "../../components/footer/Footer";
 import myAxios from "../../api/axios";
 import gsap from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
+import { FaAngleDown } from "react-icons/fa6";
 
 gsap.registerPlugin(TextPlugin);
 
@@ -24,6 +25,7 @@ export default function Basket() {
     const [authUser, setAuthUser] = useState(null);
     const theme = useTheme();
     const matches = useMediaQuery('(max-width:1020px)');
+    const [showMoreCard, setShowMoreCard] = useState(5);
     const [productDetails, setProductDetails] = useState({});
     const [displayedTotal, setDisplayedTotal] = useState("$0.00");
     const priceRef = useRef(null);
@@ -58,7 +60,7 @@ export default function Basket() {
     async function fetchProductDetails() {
       let total = 0;
 
-      const promises = carts.map(async (item) => {
+      const CardPromises = carts.map(async (item) => {
         if (productCache[item.productId]) {
           return productCache[item.productId];
         } else {
@@ -69,7 +71,7 @@ export default function Basket() {
         }
       });
 
-      const details = await Promise.all(promises);
+      const details = await Promise.all(CardPromises);
       const productDetailsMap = {};
 
       details.forEach((detail, index) => {
@@ -87,6 +89,11 @@ export default function Basket() {
       } else {
         console.log("Checkout");
       }
+    }
+
+    function handleShowMoreCard () {
+        setShowMoreCard((prevValue) => prevValue + 5);
+        window.scrollTo({ top: 0, behavior: "smooth" })
     }
 
     return (
@@ -133,7 +140,7 @@ export default function Basket() {
                                         </div>
                                     </div>
                                 </div>
-                                {carts.slice().reverse().map((item, index) => (
+                                {carts.slice(0, showMoreCard).reverse().map((item, index) => (
                                     <CartItem
                                         key={index}
                                         productId={item.productId}
@@ -141,7 +148,9 @@ export default function Basket() {
                                         detail={productDetails[item.productId]}
                                     />
                                 ))}
-
+                                {carts.length > 5 && (
+                                    <Button onClick={handleShowMoreCard} sx={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px' }}>Show More <FaAngleDown/></Button>
+                                )}
                                 <div className="flex items-center justify-center mt-8">
                                     <div className="basket_pay_details_box w-full">
                                         <div className={`basket_section grow ${ theme.palette.mode === "dark" ? 'bg-gray-600' : 'bg-gray-50' }`}>

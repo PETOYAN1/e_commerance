@@ -1,28 +1,38 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import avatar from "../../assets/images/avatar.png";
 import { FaPen } from "react-icons/fa";
 import { IconButton } from "@mui/material";
 import EditNameModal from "../../components/CrudModals/EditNameModal"
+import { useAuth, useLogout } from "../../hooks/useAuth";
+import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import { LuLogOut } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
+  useAuth();
   const [user, setUser] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const navigate = useNavigate();
+  const logout = useLogout();
   const handleToggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
 
   useEffect(() => {
     const user = localStorage.getItem("user");
 
     if (user) {
       setUser(JSON.parse(user));
+    } else {
+      navigate('/login');
     }
   }, []);
 
   return (
     <>
-      <div className="mt-5 flex rounded-lg flex-wrap flex-col items-center justify-center">
+      <div className="mt-5 flex rounded-lg flex-wrap flex-col justify-center items-center">
+        <Breadcrumbs/>
         <div className="flex items-center container mt-10 sm:w-full md:w-2/3  shadow-lg transform duration-200 easy-in-out">
           <div className="flex justify-center px-5 ">
             <img
@@ -45,6 +55,9 @@ export default function Profile() {
             </div>
             <p className="mt-2 text-gray-500 text-sm">{user?.email}</p>
           </div>
+          <IconButton onClick={logout} sx={{position: 'absolute', right: 0}}>
+            <LuLogOut/>
+          </IconButton>
         </div>
         <div className="w-full">
           <hr className="mt-6" />

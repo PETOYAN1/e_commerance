@@ -12,12 +12,13 @@ import { Container } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useEffect, useState } from "react";
 import NavBar from "../header/navBarMenu";
-import axios from "../../api/axios";
 import "../../assets/styles/Navigation.scss";
 import { useTheme } from "@emotion/react";
 import { useSelector } from "react-redux";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { GrFavorite } from "react-icons/gr";
+import myAxios from "../../api/axios";
+import { useAuth } from "../../hooks/useAuth";
 
 export const Navigation = () => {
   const theme = useTheme();
@@ -47,21 +48,14 @@ export const Navigation = () => {
   const [categories, setCategories] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(true);
   const carts = useSelector((store) => store.cart.items);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
-    axios.get("/categories").then((res) => {
+    myAxios.get("/categories").then((res) => {
       setCategories(res.data.data);
       setCategoryLoading(false);
     });
   }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -117,6 +111,7 @@ export const Navigation = () => {
         className={`w-50 mx-auto fixed_nav ${
           theme.palette.mode === "dark" ? "bg-purple-900" : "bg-purple-600"
         }`}
+        style={{ background: 'radial-gradient(circle at 10% 20%, rgb(64, 84, 178) 0%, rgb(219, 2, 234) 90%)' }}
       >
         <div className="max-w-screen-xl px-4 py-3 mx-auto">
           <div className="flex items-center justify-between">
@@ -154,7 +149,7 @@ export const Navigation = () => {
               <Search />
             </div>
             <div className="basket_root_box flex items-center justify-normal gap-2">
-              <Link to={`${ !isLoggedIn ? '/login' : '/favorite' }`} className="text-gray-100">
+              <Link to={'/favorite'} className="text-gray-100">
                   <IconButton>
                     <GrFavorite color="#f2f2f2"/>
                   </IconButton>
@@ -170,17 +165,11 @@ export const Navigation = () => {
                   </StyledBadge>
                 </IconButton>
               </Link>
-              <Link to={`${ !isLoggedIn ? '/login' : '/profile' }`}>
+              <Link to={`${!user ? '/login' : '/profile'}`}>
                 <HtmlTooltip
                   title={
                     <div className="py-3 px-2.5">
-                      {!isLoggedIn ? (
-                        <Link className="bg-purple-500 hover:bg-purple-700 text-white w-full font-bold py-3 px-4 rounded-full" to={'/login'}>Login or create profile</Link>
-                      ) : (
-                        <Link className="bg-purple-500 hover:bg-purple-700 text-white w-full font-bold py-3 px-4 rounded-full" to={'/profile'}>My Profile</Link>
-                      )
-
-                      }
+                      <Link className="bg-purple-500 hover:bg-purple-700 text-white w-full font-bold py-3 px-4 rounded-full" to={`${!user ? '/login' : '/profile'}`}>{!user ? 'Login or create profile' : 'My Profile'}</Link>  
                     </div>
                   }
                 >

@@ -37,12 +37,17 @@ class SearchController extends Controller
                     $query->where('b_name', 'LIKE', "%$searchTerm%");
                 });
 
-            if ($autocomplete) {
-                $query->limit(7);
-            } else {
-                $query->offset($offset)
-                    ->limit($limit);
-            }
+                if ($autocomplete) {
+                    $query->orderByRaw("CASE 
+                        WHEN name LIKE ? THEN 1 
+                        WHEN description LIKE ? THEN 2 
+                        ELSE 3 
+                    END", ["$searchTerm%", "$searchTerm%"])
+                    ->limit(7);
+                } else {
+                    $query->offset($offset)
+                        ->limit($limit);
+                }
 
             $products = $query->get();
             $total = $query->count();
