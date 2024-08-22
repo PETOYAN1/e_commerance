@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Providers;
-
 use Illuminate\Support\ServiceProvider;
 
 class FakerServiceProvider extends ServiceProvider
@@ -9,7 +8,7 @@ class FakerServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
-    public function register(): void
+    public function register()
     {
         //
     }

@@ -1,0 +1,55 @@
+.exchange_container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 80px;
+    padding: 5px;
+    position: relative;
+    cursor: pointer;
+}
+
+.exchange_rates_wrapper {
+    position: relative;
+}
+
+.exchange_rates_container {
+    display: none; 
+    position: absolute;
+    left: 0;
+    bottom: -180px;
+    transform: translateX(-80%); 
+    width: 300px;
+    height: 180px;
+    z-index: 1100;
+    border-radius: 10px;
+}
+
+.exchange_container:hover + .exchange_rates_container,
+.exchange_rates_container:hover {
+    display: block;
+}
+
+.rate_item_block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    cursor: pointer;
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.flag_item {
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.code_item {
+    color: #fff;
+    font-size: 15px;
+}
