@@ -31,7 +31,7 @@ class AuthUserController extends Controller
             $user->save();
             
             Mail::to($user->email)->send(new UserVerification($user));
-
+            
             return response()->json([
                 'code' => 200,
                 'message' => "Registered successfully",
@@ -50,7 +50,7 @@ class AuthUserController extends Controller
             $user = User::where('email', $request->email)->first();
             $token = $user->createToken('auth_token')->plainTextToken;
             
-            if ($user->hasVerifiedEmail()) {
+            if (!$user->hasVerifiedEmail()) {
 
                 return response()->json(['code' => 403, 'message' => 'Email not verified.'], 403);
             }
@@ -112,5 +112,19 @@ class AuthUserController extends Controller
                 'message' => 'Logout failed',
             ], 401);
         }
+    }
+    
+    public function authUser() {
+        if (Auth::check()) {
+            return response()->json([
+                'success' => true,
+                'data' => Auth::user()
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Data not found',
+        ], 403);        
     }
 }

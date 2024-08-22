@@ -22,8 +22,8 @@ class UserVerification extends Mailable
     {
         $this->user = $user;
         $this->verificationUrl = URL::temporarySignedRoute(
-            'api.v1.verification.verify', now()->addMinutes(60), ['id' => $user->id]
-        );
+            'verification.verify', now()->addMinutes(60), ['id' => $user->id]
+            );
     }
 
     /**

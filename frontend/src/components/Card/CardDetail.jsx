@@ -1,30 +1,74 @@
 /* eslint-disable react/prop-types */
 import Button from "@mui/material/Button";
-import Rating from "@mui/material/Rating";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
+import { TiStarFullOutline } from "react-icons/ti";
 import { FaCartShopping } from "react-icons/fa6";
 import "../../assets/styles/Card.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../store/cart";
+import AlertSuccess from "../AlertSuccess/AlertSuccess";
+import myAxios from "../../api/axios";
+import { useAuth } from "../../hooks/useAuth";
 
-export function CardDetail({ product, loadingCard }) {
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [value, setValue] = useState(3);
-  const imageUrl =
-  product?.images?.[0]?.url ?? "/src/assets/images/no-image.jpg";
+
+export function CardDetail({ product, loadingCard, isFavorite: initialFavorite }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isFavorite, setIsFavorite] = useState(initialFavorite);
+  const [searchParams] = useSearchParams();
+  const cardSize = searchParams.get("cardsize") || "small";
+  const imageUrl = product?.images?.[0]?.url ?? "/src/assets/images/no-image.jpg";
+  const [addedFavorite, setAddedFavorite] = useState(false);
+  const [addedFavoriteMessage, setAddedFavoriteMessage] = useState("");
+  const carts = useSelector((store) => store.cart.items);
+  const productAlreadyExists = carts.some(
+    (cart) => cart.productId === product.id
+  );
+  const [showAlert, setShowAlert] = useState(false);
+  const dispatch = useDispatch();
 
   function handleTitleLimit(source, size) {
     return source.length > size ? source.slice(0, size - 1) + "…" : source;
   }
 
   function handleFavoriteActive() {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    myAxios.post('/favorites/toggle', { product_id: product?.id })
+      .then((res) => {
+        setAddedFavoriteMessage(res.data.message)
+        setAddedFavorite(true);
+      })
     setIsFavorite(!isFavorite);
   }
 
+  const cardSizeClass =
+    cardSize === "big" ? "card_wrapper_big" : "card_wrapper_small";
+
+  function handleToTop() {
+    window.scroll({
+      top: 0,
+    });
+  }
+  
+  function handleAddToCart() {
+    dispatch(
+      addToCart({
+        productId: product.id,
+        quantity: 1,
+      })
+    );
+    setShowAlert(true)
+  }
   return (
-    <article className="card_wrapper">
+    <article className={`card_wrapper ${cardSizeClass}`}>
       {loadingCard ? (
         <SkeletonTheme baseColor="#bdbdbd" highlightColor="#999">
           <Skeleton count={1} style={{ height: "83%" }} />
@@ -39,6 +83,7 @@ export function CardDetail({ product, loadingCard }) {
           </button>
           <Link
             to={`/product/${product.slug}/${product.id}`}
+            onClick={handleToTop}
             style={{ textDecoration: "none", color: "#333" }}
             className="card_link"
           >
@@ -53,41 +98,58 @@ export function CardDetail({ product, loadingCard }) {
             <h5 className="name_product">
               {product ? handleTitleLimit(product.name, 45) : ""}
             </h5>
-            <strong>{product ? product.price : ""}$ <del className="text-sm" style={{ fontWeight: 500, color: "#868695" }}>6500$</del></strong>
-            <div className="card_star_rating">
-              <span className="flex items-center gap-2 mb-2 text-gray-400">
-                <Rating
-                  precision={0.1}
-                  name="simple-controlled"
-                  value={value}
-                  size="small"
-                  onChange={(event, newValue) => {
-                    setValue(newValue);
-                  }}
-                />
-                <small>(120)</small>
-              </span>
-              {/* <Button className="card_buy_btn"> */}
-              <Button
-                variant="contained"
-                sx={{
-                  display: "flex",
-                  gap: "5px",
-                  backgroundColor: "#772EB0",
-                  width: "100%",
-                  color: "#fff",
-                  padding: "5px 24px 7px",
-                  fontWeight: 600,
-                  borderRadius: "12px",
-                }}
-                className="card_buy_btn"
+            <strong>
+              {product ? product.price : ""}${" "}
+              <del
+                className="text-sm"
+                style={{ fontWeight: 500, color: "#868695" }}
               >
-                <FaCartShopping />{" "}
-                <span style={{ fontSize: "14px" }}>Add Basket</span>
-              </Button>
+                6500$
+              </del>
+            </strong>
+            <div className="card_star_rating">
+              <span className="flex items-center gap-1 mb-2 text-gray-400">
+                <TiStarFullOutline color="#FFD700" />
+                <small>●</small>
+                <small>({product.rating})</small>
+              </span>
+              {productAlreadyExists ? (
+                <Link  className="to_basket_link" to={"/basket"}>
+                  In the basket
+                </Link>
+              ) : (
+                <Button
+                  disabled={productAlreadyExists}
+                  onClick={handleAddToCart}
+                  variant="contained"
+                  sx={{
+                    display: "flex",
+                    gap: "5px",
+                    backgroundColor: "#772EB0",
+                    width: "100%",
+                    color: "#fff",
+                    padding: "5px 24px 7px",
+                    fontWeight: 600,
+                    borderRadius: "12px",
+                  }}
+                  className="card_buy_btn"
+                >
+                  <FaCartShopping />{" "}
+                  <span style={{ fontSize: "14px" }}>Add Basket</span>
+                </Button>
+              )}
             </div>
           </div>
-          {/* <ProductAlert showAlert={showAlert} setShowAlert={() => setShowAlert()} errorAlert={errorAlert} setErrorAlert={() => setErrorAlert()}/> */}
+          <AlertSuccess
+            CartAdded={showAlert}
+            textAlert="The product has been added to the cart"
+            onAlertClose={() => setShowAlert(false)}
+          />
+          <AlertSuccess
+            CartAdded={addedFavorite}
+            textAlert={addedFavoriteMessage}
+            onAlertClose={() => setAddedFavorite(false)}
+          />
         </>
       )}
     </article>

@@ -21,7 +21,7 @@ class Category extends Model
     }
 
     public function children() {
-        return $this->hasMany(Category::class, 'parent_id')->with('children');
+        return $this->hasMany(Category::class, 'parent_id')->with('children')->withCount('products');
     }
 
     public function child() {

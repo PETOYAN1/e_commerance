@@ -1,73 +1,89 @@
-import { Container } from "@mui/material";
 import SliderSwiper from "../components/HomeDetails/SliderSwiper/SliderSwiper";
-import StackSection from "../components/HomeDetails/StackSection/StackSection";
 import Header2 from "../components/header/Header2";
 import CardDetail from "../components/Card/CardDetail";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "../api/axios";
 import "../assets/styles/Home.scss";
 import PaginationHome from "../components/Pagination/PaginationHome";
-import { TailSpin } from "react-loader-spinner";
 import Footer from "../components/footer/Footer";
+import "ldrs/ring";
+import { useSearchParams } from "react-router-dom";
+
+const cache = {};
 
 const Home = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(1);
+  const currentPage = parseInt(searchParams.get('page')) || 1;
   const [pageCount, setPageCount] = useState(0);
-  // const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const productCardContainerRef = useRef(null);
 
   useEffect(() => {
     setLoading(true);
     fetchProducts();
-  }, [page]);
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (productCardContainerRef.current) {
+      window.scrollTo({
+        top:
+          productCardContainerRef.current.getBoundingClientRect().top +
+          window.pageYOffset - 100,
+          behavior: "smooth",
+      });
+    }
+  }, [currentPage]);
 
   const fetchProducts = async () => {
+    if (cache[currentPage]) {
+      setProducts(cache[currentPage].data);
+      setPageCount(cache[currentPage].meta.last_page);
+      setLoading(false);
+      return;
+    }
     try {
-      await axios.get(`/products?page=${page}`).then((response) => {
-        setProducts(response.data.data);
-        setPageCount(response.data.last_page);
-        setLoading(false);
-      });
+      const response = await axios.get(`/products?page=${currentPage}`);
+      cache[currentPage] = response.data;
+      setProducts(response.data.data);      
+      setPageCount(response.data.meta.last_page);
+      setLoading(false);
     } catch (error) {
-      // setError(error.response ? error.response.data : "Server Error");
+      console.error(error);
+      setLoading(false);
     }
   };
 
   const handlePageChange = (event, value) => {
-    setPage(value);
+    setSearchParams({page: value});
   };
 
   if (loading) {
     return (
-      <TailSpin
-        height="100"
-        width="100"
-        color="#0041C2"
-        ariaLabel="tail-spin-loading"
-        radius="0"
-        wrapperStyle={{}}
-        wrapperClass="homeSpinner"
-        visible={true}
-      />
+      <div className="homeSpinner">
+        <l-ring
+          size="70"
+          stroke="6"
+          bg-opacity="0"
+          speed="1.3"
+          color="#581C87"
+        ></l-ring>
+      </div>
     );
   }
 
   return (
-    <div>
+    <>
       <Header2 />
-      <Container
-        sx={{
-          mt: 2.5,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
+      {currentPage === 1 && (
+        <div className="w-100 px-3 mx-auto flex items-center justify-center mt-2">
+          <SliderSwiper />
+        </div>
+      )}
+      <main
+        ref={productCardContainerRef}
+        className="product_card_container mt-10 justify-around max-w-[1440px] flex flex-row flex-wrap gap-3 mx-auto items-center"
       >
-        <SliderSwiper />
-        <StackSection />
-      </Container>
-      <div className="product_card_container max-w-screen-xl flex flex-row flex-wrap gap-10 mx-auto items-center">
         {products.map((product) => (
           <CardDetail
             key={product.id}
@@ -75,11 +91,14 @@ const Home = () => {
             loadingCard={loading}
           />
         ))}
-      </div>
-      <PaginationHome currentPage={page} pageCount={pageCount} onPageChange={handlePageChange} />
+      </main>
+      <PaginationHome
+        currentPage={currentPage}
+        pageCount={pageCount}
+        onPageChange={handlePageChange}
+      />
       <Footer />
-
-    </div>
+    </>
   );
 };
 

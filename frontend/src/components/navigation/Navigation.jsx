@@ -12,11 +12,16 @@ import { Container } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useEffect, useState } from "react";
 import NavBar from "../header/navBarMenu";
-import axios from "../../api/axios";
 import "../../assets/styles/Navigation.scss";
 import { useTheme } from "@emotion/react";
+import { useSelector } from "react-redux";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { GrFavorite } from "react-icons/gr";
+import myAxios from "../../api/axios";
+import { useAuth } from "../../hooks/useAuth";
 
 export const Navigation = () => {
+  const theme = useTheme();
   const StyledBadge = styled(Badge)(() => ({
     "& .MuiBadge-badge": {
       right: -3,
@@ -26,14 +31,27 @@ export const Navigation = () => {
       color: "dark:bg-gray-700",
     },
   }));
+
+  const HtmlTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: 'transparent',
+      color: "rgba(0, 0, 0, 0.87)",
+      maxWidth: 250,
+      fontSize: theme.typography.pxToRem(15),
+    },
+  }));
+
   const [showNavBarMenu, setShowNavBarMenu] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(true);
-  const theme = useTheme();
+  const carts = useSelector((store) => store.cart.items);
+  const { user } = useAuth();
 
   useEffect(() => {
-    axios.get("/categories").then((res) => {
+    myAxios.get("/categories").then((res) => {
       setCategories(res.data.data);
       setCategoryLoading(false);
     });
@@ -59,7 +77,11 @@ export const Navigation = () => {
   }
   return (
     <>
-      <nav className={` w-50 mx-auto ${theme.palette.mode=== 'dark' ? 'bg-gray-900' : 'bg-purple-900'}`}>
+      <nav
+        className={` w-50 mx-auto z-50 ${
+          theme.palette.mode === "dark" ? "bg-gray-900" : "bg-purple-900"
+        }`}
+      >
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
           <Link
             to="/"
@@ -81,22 +103,19 @@ export const Navigation = () => {
             >
               (555) 412-1234
             </Link>
-            <Link
-              to="/login"
-              className="text-sm flex items-center gap-1 text-gray-100  hover:underline"
-            >
-              <MdPerson /> Login
-            </Link>
             <Header />
           </div>
         </div>
       </nav>
       <nav
-        className={`w-50 mx-auto fixed_nav ${theme.palette.mode=== 'dark' ? 'bg-purple-900' : 'bg-purple-600'}`}
+        className={`w-50 mx-auto fixed_nav ${
+          theme.palette.mode === "dark" ? "bg-purple-900" : "bg-purple-600"
+        }`}
+        style={{ background: 'radial-gradient(circle at 10% 20%, rgb(64, 84, 178) 0%, rgb(219, 2, 234) 90%)' }}
       >
         <div className="max-w-screen-xl px-4 py-3 mx-auto">
           <div className="flex items-center justify-between">
-            <ul className="flex flex-row items-center font-medium mt-0 space-x-8 rtl:space-x-reverse text-sm">
+            <ul className="menu_root_box flex flex-row items-center font-medium mt-0 space-x-8 rtl:space-x-reverse text-sm">
               <li>
                 <Container
                   sx={{
@@ -109,7 +128,7 @@ export const Navigation = () => {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      color: "#fff"
+                      color: "#fff",
                     }}
                   >
                     <MenuIcon sx={{ fontSize: "30px" }} />
@@ -126,22 +145,39 @@ export const Navigation = () => {
                 </Link>
               </li>
             </ul>
-            <div className="w-80">
+            <div className="w-full flex items-center flex-col">
               <Search />
             </div>
-            <div className="flex items-center justify-normal gap-2">
-              <IconButton aria-label="cart" sx={{ color: grey[100] }}>
-                <StyledBadge
-                  badgeContent={4}
-                  color="primary"
-                  sx={{ color: grey[100] }}
+            <div className="basket_root_box flex items-center justify-normal gap-2">
+              <Link to={'/favorite'} className="text-gray-100">
+                  <IconButton>
+                    <GrFavorite color="#f2f2f2"/>
+                  </IconButton>
+              </Link>
+              <Link to={"/basket"}>
+                <IconButton aria-label="cart" sx={{ color: grey[100] }}>
+                  <StyledBadge
+                    badgeContent={carts.length}
+                    color="primary"
+                    sx={{ color: grey[100] }}
+                  >
+                    <ShoppingCartIcon />
+                  </StyledBadge>
+                </IconButton>
+              </Link>
+              <Link to={`${!user ? '/login' : '/profile'}`}>
+                <HtmlTooltip
+                  title={
+                    <div className="py-3 px-2.5">
+                      <Link className="bg-purple-500 hover:bg-purple-700 text-white w-full font-bold py-3 px-4 rounded-full" to={`${!user ? '/login' : '/profile'}`}>{!user ? 'Login or create profile' : 'My Profile'}</Link>  
+                    </div>
+                  }
                 >
-                  <ShoppingCartIcon />
-                </StyledBadge>
-              </IconButton>
-              <IconButton>
-                <PersonIcon sx={{ color: grey[100] }} />
-              </IconButton>
+                  <IconButton>
+                    <PersonIcon sx={{ color: grey[100] }} />
+                  </IconButton>
+                </HtmlTooltip>
+              </Link>
             </div>
           </div>
         </div>

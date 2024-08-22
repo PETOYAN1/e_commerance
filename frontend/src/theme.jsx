@@ -25,7 +25,7 @@ export const getDesignTokens = (mode) => ({
             main: grey[700],
           },
           secondary: {
-            main: grey[500],
+            main: grey[100],
           },
           text: {
             primary: "#000000",
@@ -54,8 +54,8 @@ export const getDesignTokens = (mode) => ({
             main: "#f48fb1",
           },
           text: {
-            primary: "#e0e0e0", // Changed from #ffffff to a softer white
-            secondary: grey[400], // Changed from grey[500] to a lighter grey
+            primary: "#e0e0e0", 
+            secondary: grey[400],
           },
         }),
   },
