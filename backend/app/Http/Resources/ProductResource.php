@@ -19,11 +19,15 @@ class ProductResource extends JsonResource
             'id'=> $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'rating' => $this->rating,
             'price'=> $this->price,
             'description' => $this->description,
             'images' => ImageResource::collection($this->images) ?? null,
             'category' => $this->category->name ?? null,
+            'brand' => $this->brand->b_name ?? null,
+            'about_product' => ProductEntryResource::collection($this->productEntry) ?? null,
             'dis_count' => $this->discounts->percent ?? null,
+            'vendor_code' => $this->vendor_code ?? null
         ];
     }
 }

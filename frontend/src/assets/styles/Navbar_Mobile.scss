@@ -1,0 +1,35 @@
+.navbar_mobile_link_cont {
+    display: none !important;
+    & ul {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      
+      li {
+        width: 100%;
+        line-height: 30px;
+        display: flex;
+        justify-content: center;
+      }
+    }
+    & a {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center; 
+      font-size: 30px;
+      font-weight: bold;
+    }
+  }
+  
+  @media only screen and (max-width: 1020px) {
+    .navbar_mobile_link_cont {
+      display: flex !important;
+    }
+  }
+  @media only screen and (max-width: 600px) {
+    .navbar_mobile_link_cont {
+      padding: 5px 0 !important;
+    }
+  }

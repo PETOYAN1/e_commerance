@@ -10,7 +10,9 @@ import "../../../assets/styles/Slider.scss";
 import { Pagination, Navigation } from 'swiper/modules';
 import { Link } from 'react-router-dom';
 
+
 const SliderSwiper = () => {
+
   return (
     <>
       <Swiper
@@ -24,11 +26,11 @@ const SliderSwiper = () => {
         modules={[Pagination, Navigation]}
         className="mySwiper"
       >
-        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/gaming_pc.jpg" alt="" /></Link></SwiperSlide>
-        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/laptop.webp" alt="" /></Link></SwiperSlide>
-        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/gaming_pc.jpg" alt="" /></Link></SwiperSlide>
-        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/laptop.webp" alt="" /></Link></SwiperSlide>
-        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/gaming_pc.jpg" alt="" /></Link></SwiperSlide>
+        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/slider_img_2.jpg" alt="" /></Link></SwiperSlide>
+        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/slider_img_1.jpg" alt="" /></Link></SwiperSlide>
+        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/slider_img_3.jpg" alt="" /></Link></SwiperSlide>
+        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/slider_img_4.jpg" alt="" /></Link></SwiperSlide>
+        <SwiperSlide><Link className='w-full select-none'><img src="src/assets/images/slider_img_5.jpg" alt="" /></Link></SwiperSlide>
       </Swiper>
     </>
   );

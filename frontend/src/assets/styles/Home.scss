@@ -1,0 +1,13 @@
+.homeSpinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+}
+
+
+@media screen and (max-width: 800px) {
+  .product_card_container {
+    justify-content: center;
+  }
+}

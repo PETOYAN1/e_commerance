@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\CategoryWithProductsResource;
 use App\Models\Category;
 use Exception;
 use Illuminate\Http\Request;
@@ -13,15 +14,18 @@ use Illuminate\Support\Str;
 
 class ProductCategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $categoryWithProducts = Category::withCount('Products')->get();
+            $limit = $request->limit;
+            $categoryWithProducts = Category::with('children')->whereNull('parent_id')
+            ->limit(10)->offset($limit)
+            ->get();
 
             if ($categoryWithProducts) {
                 return response()->json([
                     'code' => 200,
-                    'data' => CategoryResource::collection($categoryWithProducts)
+                    'data' =>  CategoryResource::collection($categoryWithProducts)
                 ], 200);
             } else {
                 return response()->noContent();
@@ -71,14 +75,14 @@ class ProductCategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $category = Category::find($id);
+            $category = Category::withCount("Products")->find($id);
     
             if (!$category) {
                 return response()->json(['message' => 'Category not found'], 404);
             }
         
             return response()->json([
-                'data' => new CategoryResource($category)
+                'data' => new CategoryWithProductsResource($category)
             ]);
         } catch (Exception $e) {
             return response()->json([

@@ -20,8 +20,7 @@ class CategoryResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'picture' => asset('storage/' . $this->picture),
-            'products_count' => $this->products_count,
-            'products' => ProductResource::collection($this->products) ?? null,
+            'children' => SubCategoryResource::collection($this->children),
             'created_at' => $this->created_at->format('d-m-Y')
         ];
     }

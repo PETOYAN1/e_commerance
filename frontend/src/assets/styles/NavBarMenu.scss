@@ -1,0 +1,115 @@
+.navbar {
+  position: absolute;
+  top: 142px;
+  left: 0;
+  transform: translateX(-100%);
+  z-index: 999;
+  min-height: calc(100vh - 144px);
+  transition: 0.2s ease-out;
+
+  .menu_container {
+    position: relative;
+    overflow-y: auto;
+    min-width: 18.75rem;
+  }
+
+  .sub_menu_container {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    min-width: 18.75rem;
+    overflow-y: auto;
+    animation: opacity 0.2s ease;
+
+    @keyframes opacity {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .sub_menu_ul {
+      min-width: 300px;
+      display: flex;
+      flex-direction: column;
+      padding: 15px 5px;
+
+      .sub_menu_link_li {
+        width: 100%;
+        .sub_link {
+          display: flex; 
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 5px;
+          width: 100%;  
+
+          & span {
+            font-size: 12px;
+          }
+        }
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+
+    .category_image_container {
+      width: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+  }
+
+  .nav_menu_ul {
+    width: 100%;
+    overflow-y: auto;
+    height: 100%;
+
+    .nav_link {
+      width: 100%;
+      display: flex;
+      text-decoration: none;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: 12px;
+      padding-inline: 30px;
+      height: 100%;
+      transition: 0.2s ease color;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(85, 82, 82, 0.9);
+      }
+    }
+    .nav_menu_link_li {
+      width: 95%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+  }
+
+  @media (max-width: 992px) {
+    backdrop-filter: blur(20px);
+    background: rgba(26, 25, 25, 0.9);
+
+    .navbar-container {
+      display: block;
+      position: absolute;
+      height: 60px;
+      background-color: transparent;
+      align-items: center;
+    }
+  }
+}
+.open {
+  transform: translate(0%);
+}

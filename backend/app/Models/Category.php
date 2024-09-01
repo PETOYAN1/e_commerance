@@ -9,6 +9,7 @@ class Category extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'parent_id',
         'name',
         'slug',
         'description',
@@ -17,5 +18,13 @@ class Category extends Model
 
     public function Products() {
         return $this->hasMany(Product::class);
+    }
+
+    public function children() {
+        return $this->hasMany(Category::class, 'parent_id')->with('children')->withCount('products');
+    }
+
+    public function child() {
+        return $this->hasMany(Category::class, 'parent_id');
     }
 }

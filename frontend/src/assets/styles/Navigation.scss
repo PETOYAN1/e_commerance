@@ -1,0 +1,15 @@
+.fixed_nav {
+  width: 100%;
+  z-index: 1000 !important;
+  background: #1f2937;
+  transition: background 0.3s;
+  transition: 0.3s;
+  position: sticky;
+  top: 0;
+}
+
+@media only screen and (max-width: 1020px) {
+  .menu_root_box, .basket_root_box{
+    display: none !important;
+  }
+}
